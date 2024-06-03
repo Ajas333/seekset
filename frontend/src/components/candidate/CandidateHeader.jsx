@@ -46,7 +46,7 @@ function CandidateHeader() {
   const items = [
     {
       label: (
-        <p>Profile</p>
+        <Link to={'/candidate/profile/'}><p>Profile</p></Link>
       ),
       key: '0',
     },
@@ -59,7 +59,7 @@ function CandidateHeader() {
   ];
 
   return (
-    <div className='w-full flex justify-between h-12 bg-blue-200' >
+    <div className='w-full flex justify-between h-12 bg-blue-200 fixed top-0 z-50' >
         <Link to={'/'}>
         <div className='ml-3  flex cursor-pointer'>
             <div className='mt-2'>
@@ -70,26 +70,28 @@ function CandidateHeader() {
             </p>
         </div>
         </Link>
-        <div>
-          {authentication_user.name}
+        <div className='flex items-center'>
+            <Link to={'/candidate/home/'}><span className='text-base font-semibold text-bg-800 cursor-pointer'>Home</span></Link>
         </div>
         <div className='flex'>
             <div className='pt-1 mx-2'>
               <hr className='h-10 border-l-4 border-solid border-gray-500' />
             </div>
-            <div className='flex gap-7 px-3'>
+            <div className='flex gap-7 px-3 items-center'>
                 <div className='flex flex-col justify-center items-center'>
                     <MdOutlineMessage className='w-5 h-5 '/>
                       <p className='text-xs font-medium text-gray-500'>Message</p>
                 </div>
-                <div className='flex flex-col justify-center items-center'>
+                <div className='flex flex-col justify-center items-center cursor-pointer'>
                     <ImBookmarks className='w-5 h-5 '/>
                     <p className='text-xs font-medium text-gray-500'>Saved Jobs</p>
                 </div>
-                <div className='flex flex-col justify-center items-center'>
-                    <FaFileAlt className='w-5 h-5'/>
-                    <p className='text-xs font-medium text-gray-500'>Accepted Jobs</p>
+                <Link to={'/candidate/applyedjobs/'}>
+                <div className='flex flex-col justify-center items-center cursor-pointer'>
+                <FaFileAlt className='w-5 h-5'/>
+                    <p className='text-xs font-medium text-gray-500'>Applyed Jobs</p>
                 </div>
+                </Link>
                 <div className='flex flex-col justify-center items-center'>
                     <IoNotifications className='w-5 h-5'/>
                     <p className='text-xs font-medium text-gray-500'>Notification</p>

@@ -15,6 +15,9 @@ import { set_Authentication } from '../../Redux/Authentication/authenticationSli
 import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice'
 import axios, { Axios } from 'axios'
 import ResetPassword from '../../pages/Common/ResetPassword'
+import JobDetail from '../../pages/Candidate/jobs/JobDetail'
+import ApplyedJob from '../../pages/Candidate/jobs/ApplyedJob'
+import Profile from '../../pages/Candidate/Profile/Profile'
 
 
 
@@ -86,6 +89,9 @@ console.log("inside candidate wrapper.................",authentication_user)
           <Route path='/otp' element={<Otp/>}></Route>
           <Route path='/create_profile' element={<ProfileCreation/>}></Route>
           <Route path='/home' element={<CandidateHome/>}></Route>
+          <Route path='/jobdetails/:jobId/' element={<JobDetail/>}></Route>
+          <Route path='/applyedjobs' element={<ApplyedJob/>} ></Route>
+          <Route path='/profile' element={<Profile/>}></Route>
           
         </Routes>
     </div>

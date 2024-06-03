@@ -12,6 +12,10 @@ import { set_Authentication } from '../../Redux/Authentication/authenticationSli
 import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice'
 import axios from 'axios'
 import EmpProfileCreation from '../../pages/Employer/profile/EmpProfileCreation'
+import PostJob from '../../pages/Employer/job/PostJob'
+import JobDetail from '../../pages/Employer/job/JobDetail'
+import Applications from '../../pages/Employer/job/Applications'
+import CandidateView from '../../pages/Employer/job/CandidateView'
 
 function EmployerWrapper() {
   const navigate=useNavigate()
@@ -77,8 +81,13 @@ console.log("inside employer wrapper.................",authentication_user)
         <Route path='/signup' element={<EmpSignup/>}></Route>
         <Route path='/forgot' element={<ForgetPassword/>}></Route>
         <Route path='/otp' element={<Otp/>} ></Route>
-        <Route path='/home' element={<EmpHome/>}></Route>
         <Route path='/profile_creation' element={<EmpProfileCreation/>} ></Route>
+        <Route path='/home' element={<EmpHome/>}></Route>
+        <Route path='/postjob' element={<PostJob/>}></Route>
+        <Route path='/jobdetail/:jobId' element={<JobDetail/>} ></Route>
+        <Route path='/applications' element={<Applications/>}></Route>
+        <Route path='/candidateView' element={<CandidateView/>}></Route>
+
       </Routes>
       
     </div>

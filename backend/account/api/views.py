@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class CandidateRegisterView(APIView):
+    permission_classes = []
     def post(self,request):
         print("hellooooo")
         print(request.data)
@@ -37,6 +38,7 @@ class CandidateRegisterView(APIView):
         
 
 class EmployerRegisterView(APIView):
+    permission_classes = []
     def post(self,request):
         print("hellooooooooo")
         serializer=EmployerRegisterSerializer(data=request.data)
@@ -58,6 +60,7 @@ class EmployerRegisterView(APIView):
         
 
 class OtpVarificationView(APIView):
+    permission_classes = []
     def post(self,request):
         serializer=OtpVerificationSerializer(data=request.data)
         if serializer.is_valid():
@@ -99,6 +102,7 @@ class OtpVarificationView(APIView):
 
        
 class ResendOtpView(APIView):
+    permission_classes = []
     def post(self,request):
         email=request.data.get('email')
         print(email)
@@ -115,6 +119,7 @@ class ResendOtpView(APIView):
 
 
 class ForgotPassView(APIView):
+    permission_classes = []
     def post(self,request):
         print(request.data)
         email=request.data.get('email')
@@ -139,6 +144,7 @@ class ForgotPassView(APIView):
             return Response({"message": "Error"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ResetPassword(APIView):
+    permission_classes = []
     def post(self,request):
         password=request.data.get('password')
         id=request.data.get('id')
@@ -159,7 +165,7 @@ class ResetPassword(APIView):
             return Response({"message": "Error"}, status=status.HTTP_400_BAD_REQUEST)
             
 class LoginView(APIView):
-
+    permission_classes = []
     def post(self, request):
         try:
             email = request.data.get('email')
@@ -208,6 +214,7 @@ class LoginView(APIView):
         return Response(content, status=status.HTTP_200_OK)
 
 class AdminLoginView(APIView):
+    permission_classes = []
     def post(self,request):
         try:
             email = request.data.get('email')

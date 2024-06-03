@@ -46,7 +46,7 @@ function EmployerHeader() {
         },
       ];
   return (
-    <div className='fixed z-50 w-full flex justify-between h-12 bg-blue-200' >
+    <div className='fixed z-50 shadow-xl w-full flex justify-between h-12 bg-blue-200' >
         
         <Link to={'/'}>
         <div className='ml-3  flex cursor-pointer'>
@@ -63,15 +63,17 @@ function EmployerHeader() {
             <div className='pt-1 mx-2'>
               <hr className='h-10 border-l-4 border-solid border-gray-500' />
             </div>
-            <div className='flex gap-7 px-3'>
+            <div className='flex gap-7 px-3 items-center'>
                 <div className='flex flex-col justify-center items-center'>
                     <FaSignsPost className='w-5 h-5 '/>
                       <p className='text-xs font-medium text-gray-500'>Job Posted</p>
                 </div>
+                <Link to={'/employer/applications'}>
                 <div className='flex flex-col justify-center items-center'>
                     <LiaFileAltSolid className='w-5 h-5 ' />
                     <p className='text-xs font-medium text-gray-500'>Applications</p>
                 </div>
+                </Link>
                 <div className='flex flex-col justify-center items-center'>
                     <MdOutlineMessage className='w-5 h-5 '/>
                     <p className='text-xs font-medium text-gray-500'>Message</p>

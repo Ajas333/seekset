@@ -65,16 +65,17 @@ class User(AbstractBaseUser):
 
 
 class Candidate(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE, related_name="Candidate_profile")
-    completed=models.BooleanField(default=False)
-    phone=models.BigIntegerField(blank=True,null=True)
-    dob=models.DateField(blank=True,null=True)
+    user       =models.ForeignKey(User,on_delete=models.CASCADE, related_name="Candidate_profile")
+    completed  =models.BooleanField(default=False)
+    phone      =models.BigIntegerField(blank=True,null=True)
+    dob        =models.DateField(blank=True,null=True)
     profile_pic=models.ImageField(upload_to='profile_pic',blank=True,null=True)
-    Gender=models.CharField(blank=True,null=True)
-    skills=models.TextField(blank=True,null=True)
-    resume = models.FileField(upload_to='resumes',blank=True,null=True)
-    linkedin=models.CharField(max_length=150,blank=True,null=True)
-    github=models.CharField(max_length=150,blank=True,null=True)
+    Gender     =models.CharField(blank=True,null=True)
+    skills     =models.TextField(blank=True,null=True)
+    resume     =models.FileField(upload_to='resumes',blank=True,null=True)
+    linkedin   =models.CharField(max_length=150,blank=True,null=True)
+    github     =models.CharField(max_length=150,blank=True,null=True)
+    place      =models.CharField(max_length=50,blank=True,null=True)
     
     def  __str__(self):
         return self.user.full_name

@@ -8,7 +8,7 @@ def send_otp_via_mail(email,otp):
     subject = f'Welcome to seekset !! user verification mail'
     otp=random.randint(1000,9999)
     message= f'Your otp is {otp}'
-    email_from=settings.EMAIL_HOST
+    email_from = settings.EMAIL_HOST_USER
 
     try:
         send_mail(subject,message,email_from,[email])

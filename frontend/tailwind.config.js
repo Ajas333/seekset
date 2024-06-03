@@ -3,7 +3,11 @@ export default {
   content: ["./index.html",
   "./src/**/*.{js,ts,jsx,tsx}",],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'sans': ['Source Sans Pro', 'sans-serif'],
+      },
+    },
     borderRadius: {
       'none': '0',
       'sm': '0.125rem',
