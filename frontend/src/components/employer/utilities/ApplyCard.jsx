@@ -11,6 +11,7 @@ function ApplyCard({selectedJob,setChange,setCurrent,setStatus}) {
        }
     }, [selectedJob])
     console.log("applications....",applications)
+    console.log("selected jobsssssssssssssssssssssssss",selectedJob)
     const handleClick =(data)=>{
         setChange(false)
         setCurrent(data);

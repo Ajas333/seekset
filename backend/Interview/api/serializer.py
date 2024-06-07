@@ -2,7 +2,7 @@ from rest_framework import serializers
 from Interview.models import *
 from EmpJobs.models import *
 
-class InterviewSheduleSerializer(serializers.ModelSerializer):
+class SheduleInterviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = InterviewShedule
         fields = ['id','candidate', 'employer', 'job', 'date']
@@ -14,3 +14,9 @@ class InterviewSheduleSerializer(serializers.ModelSerializer):
         employer = Employer.objects.get(user=user)
         validated_data['employer'] = employer
         return super().create(validated_data)
+
+class InterviewSheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InterviewShedule
+        fields = ['employer','job','date','active','selected','status']
+    

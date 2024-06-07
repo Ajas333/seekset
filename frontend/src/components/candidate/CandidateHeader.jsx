@@ -11,6 +11,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { set_Authentication } from '../../Redux/Authentication/authenticationSlice';
 import { useSelector, useDispatch } from "react-redux";
 import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice';
+import { FaUserTie } from "react-icons/fa";
 
 function CandidateHeader() {
   const authentication_user = useSelector((state)=> state.authentication_user);
@@ -86,6 +87,12 @@ function CandidateHeader() {
                     <FaEnvelopeOpenText  className='w-5 h-5 '/>
                       <p className='text-xs font-medium text-gray-500'>Accepted jobs</p>
                 </div>
+                <Link to={'/candidate/shedules/'}>
+                <div className='flex flex-col justify-center items-center cursor-pointer'>
+                    <FaUserTie  className='w-5 h-5 '/>
+                      <p className='text-xs font-medium text-gray-500'>Interview</p>
+                </div>
+                </Link>
                 <Link to={'/candidate/savedjobs'}>
                 <div className='flex flex-col justify-center items-center cursor-pointer'>
                     <ImBookmarks className='w-5 h-5 '/>

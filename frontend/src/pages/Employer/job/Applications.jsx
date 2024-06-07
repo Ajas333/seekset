@@ -12,6 +12,7 @@ function Applications() {
     const [change,setChange] = useState(true)
     const [current,setCurrent] = useState(null)
     const [status,setStatus] = useState('')
+    const [questions,setQuestions] = useState([])
     const baseURL='http://127.0.0.1:8000/'
     const token = localStorage.getItem('access')
 
@@ -29,6 +30,13 @@ function Applications() {
            if(responce.status == 200){
              setJobData(responce.data.data)
              setSelectedJob(responce.data.data[0]);
+             if (responce.data.data[0].questions !== null){
+
+                 setQuestions(responce.data.data[0].questions)
+             }
+             else{
+                setQuestions([])
+             }
             }
         }
         catch(error){
@@ -39,6 +47,8 @@ function Applications() {
     fetchJobDetails();
 }, [])
 
+
+
 const formatDate = (dateTimeString) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateTimeString).toLocaleDateString(undefined, options);
@@ -48,10 +58,19 @@ console.log("job data",jobData)
 
 const handleJobClick =(job)=>{
     setSelectedJob(job);
+    if (job.questions !== null){
+
+        setQuestions(job.questions)
+    }
+    else{
+        setQuestions([])
+    }
+   console.log("jobbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",job)
 }
 
 console.log("selected jobs.......",selectedJob)
 console.log("current candidatemigkjg",current)
+console.log("questionsssssssssssssssss",questions)
 return (
     <div className='pt-12'>
         <SideBar/>
@@ -116,7 +135,7 @@ return (
                     <div className='overflow-y-auto scroll-smooth max-h-full'>
                         {change ? 
                             (<ApplyCard selectedJob={selectedJob} setChange={setChange} setCurrent={setCurrent} setStatus={setStatus}/>) : 
-                            ( <CandidateView selectedJob={selectedJob} setChange={setChange} current={current} />)}
+                            ( <CandidateView selectedJob={selectedJob} setChange={setChange} current={current} questions={questions}/>)}
                     
                     </div>
             </div>

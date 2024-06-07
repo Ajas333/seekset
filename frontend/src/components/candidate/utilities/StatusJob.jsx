@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react'
 
 function StatusJob({selectedJob}) {
     const [step,setStep]=useState(0)
-    const [action,setAction] = useState('')
+    
    
     useEffect(() => {
         if (selectedJob && selectedJob.status) {
@@ -15,16 +15,24 @@ function StatusJob({selectedJob}) {
             } else if(selectedJob.status === "Interview Sheduled"){
               setStep(4);
             }
+            else if(selectedJob.status === "Accepted"){
+                setStep(5);
+            }
+            else{
+                setStep(6)
+            }
           }
       }, [selectedJob]);
+    
     
       if (!selectedJob) {
         return null; // or a loading spinner or message
       }
  
       
-    console.log("inside stataus jon component",selectedJob)
-    console.log(action)
+    console.log("inside status job component",selectedJob)
+    console.log("step.................",step)
+   
     
   return (
     <div>
@@ -64,12 +72,12 @@ function StatusJob({selectedJob}) {
                             <p className="mt-2 text-center">Resume Viewed</p>                
                         </div> 
                         <div className={`flex flex-col items-center `}>
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${step >= 4 ? 'bg-green-500' : 'bg-gray-500'}`}>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${step == 4 ? 'bg-green-500': step == 6 ? 'bg-red-500': 'bg-gray-500'}`}>
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </div>
-                            <p className="mt-2 text-center">Recruter Action</p>                
+                            <p className={`mt-2 text-center ${step >=4 ? 'font-bold' : ''}`}>{step >=4 ? (<p>{selectedJob.status}</p>):(<p>Recruter Action</p>)}</p>                
                         </div> 
                     </div>
 

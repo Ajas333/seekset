@@ -148,6 +148,9 @@ class Applyjob(APIView):
     permission_classes=[IsAuthenticated]
     def post(self, request, job_id):
         user = request.user
+        answer_data = request.data
+        print(request.data)
+        print(answer_data)
         try:
             job = Jobs.objects.get(id=job_id)
             candidate = Candidate.objects.get(user=user)
@@ -156,6 +159,14 @@ class Applyjob(APIView):
                 return Response({"message": "You have already applied for this job"}, status=status.HTTP_200_OK)
 
             ApplyedJobs.objects.create(candidate=candidate, job=job)
+
+            if answer_data:
+                for q_id , answer in answer_data.items():
+                    try:
+                        question = Question.objects.get(id=q_id)
+                        Answer.objects.create(candidate=candidate,question=question,answer_text=answer)
+                    except Question.DoesNotExist:
+                        return Response({"message": f"Question with id {q_id} not found"}, status=status.HTTP_400_BAD_REQUEST)
             return Response({"message": "Job applied successfully"}, status=status.HTTP_201_CREATED)
 
         except Jobs.DoesNotExist:

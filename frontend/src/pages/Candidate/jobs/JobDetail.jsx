@@ -102,9 +102,11 @@ function JobDetail() {
         // });
       }
     }
+
     const handleApply = async ()=>{
       try{
-        const responce = await axios.post(`${baseURL}api/empjob/applyjob/${jobId}/`,{},{
+       
+        const responce = await axios.post(`${baseURL}api/empjob/applyjob/${jobId}/`,answers,{
           headers:{
             'Authorization': `Bearer ${token}`,
             'Accept' : 'application/json',
@@ -113,6 +115,7 @@ function JobDetail() {
         });
         console.log(responce)
         if(responce.status == 200 || responce.status == 201){
+          setModal(false)
           Swal.fire({
             position: "center",
             icon: "success",
@@ -137,7 +140,7 @@ function JobDetail() {
   return (
     <div className='mt-16'>
       <div className='flex items-center flex-col gap-2'>
-        {modal && <QModal setModal={setModal} questions={questions} setAnswers={setAnswers} answers={answers}/> }
+        {modal && <QModal setModal={setModal} questions={questions} setAnswers={setAnswers} answers={answers} handleApply={handleApply}/> }
             <div className='w-3/5 py-4 bg-gray-100 rounded-md mt-8'>
                 <div className='flex  py-1'>
                     <div className="group relative h-16 w-16 overflow-hidden rounded-lg ml-4 ">

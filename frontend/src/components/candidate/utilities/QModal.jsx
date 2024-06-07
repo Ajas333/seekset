@@ -1,7 +1,7 @@
 import React, { useRef, useState,useEffect } from 'react'
 import { IoMdClose } from "react-icons/io";
 
-function QModal({setModal,questions,setAnswers,answers}) {
+function QModal({setModal,questions,setAnswers,answers,handleApply}) {
     const  modalRef = useRef();
    
     const closeModal =(e)=>{
@@ -17,6 +17,7 @@ function QModal({setModal,questions,setAnswers,answers}) {
       };
       const handleSubmit = (e) => {
         e.preventDefault();
+        handleApply();
         console.log(answers);
         // You can send the answers to the server or handle them as needed
       };

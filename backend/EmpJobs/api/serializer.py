@@ -42,6 +42,16 @@ class ApplyedJobSerializer(serializers.ModelSerializer):
         model = ApplyedJobs
         fields = ['id', 'job', 'status', 'applyed_on']
 
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = '__all__'
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = '__all__'
+
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
@@ -62,14 +72,20 @@ class CandidateSerializer(serializers.ModelSerializer):
 
 class ApplyedForJobsSerializer(serializers.ModelSerializer):
     candidate = CandidateSerializer()
+    answers = serializers.SerializerMethodField()
 
     class Meta:
         model = ApplyedJobs
         fields = '__all__'
 
+    def get_answers(self, obj):
+        answers = Answer.objects.filter(candidate=obj.candidate, question__job=obj.job)
+        return AnswerSerializer(answers, many=True).data
+
 class ApplicationSerializer(serializers.ModelSerializer):
     employer_name = serializers.SerializerMethodField()
     applications = serializers.SerializerMethodField()
+    questions = serializers.SerializerMethodField()
     class Meta:
         model = Jobs
         fields = '__all__'
@@ -81,6 +97,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
         applications = ApplyedJobs.objects.filter(job=obj)
         serializer = ApplyedForJobsSerializer(applications, many=True)
         return serializer.data
+    
+    def get_questions(self, obj):
+        questions = Question.objects.filter(job=obj)
+        if questions.exists():
+            return QuestionSerializer(questions, many=True).data
+        else:
+            return None
 
 class SavedJobSerializer(serializers.ModelSerializer):
     job=JobSerializer()
