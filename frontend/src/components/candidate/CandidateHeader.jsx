@@ -3,7 +3,7 @@ import logo from '../../assets/logo.png'
 import default_img from '../../assets/default.png'
 import { MdOutlineMessage } from "react-icons/md";
 import { ImBookmarks } from "react-icons/im";
-import { FaFileAlt } from "react-icons/fa";
+import { FaFileAlt,FaEnvelopeOpenText } from "react-icons/fa";
 import { IoNotifications } from "react-icons/io5";
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
@@ -82,10 +82,16 @@ function CandidateHeader() {
                     <MdOutlineMessage className='w-5 h-5 '/>
                       <p className='text-xs font-medium text-gray-500'>Message</p>
                 </div>
+                <div className='flex flex-col justify-center items-center'>
+                    <FaEnvelopeOpenText  className='w-5 h-5 '/>
+                      <p className='text-xs font-medium text-gray-500'>Accepted jobs</p>
+                </div>
+                <Link to={'/candidate/savedjobs'}>
                 <div className='flex flex-col justify-center items-center cursor-pointer'>
                     <ImBookmarks className='w-5 h-5 '/>
                     <p className='text-xs font-medium text-gray-500'>Saved Jobs</p>
                 </div>
+                </Link>
                 <Link to={'/candidate/applyedjobs/'}>
                 <div className='flex flex-col justify-center items-center cursor-pointer'>
                 <FaFileAlt className='w-5 h-5'/>

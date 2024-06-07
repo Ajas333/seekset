@@ -14,7 +14,7 @@ function CandidateHome() {
     const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access')
     const [jobData,setJobData] = useState([])
-
+    console.log(token)
     useEffect(() => {
       const fetchJobData = async()=>{
         try{

@@ -10,12 +10,10 @@ function StatusJob({selectedJob}) {
               setStep(1);
             } else if (selectedJob.status === "Application Viewd") {
               setStep(2);
-            } else if (selectedJob.status === "Accepted") {
+            } else if (selectedJob.status === "Resume Viewd") {
               setStep(3);
-              setAction('Accepted');
-            } else {
-              setStep(3);
-              setAction('Rejected');
+            } else if(selectedJob.status === "Interview Sheduled"){
+              setStep(4);
             }
           }
       }, [selectedJob]);
@@ -64,6 +62,14 @@ function StatusJob({selectedJob}) {
                                 </svg>
                             </div>
                             <p className="mt-2 text-center">Resume Viewed</p>                
+                        </div> 
+                        <div className={`flex flex-col items-center `}>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${step >= 4 ? 'bg-green-500' : 'bg-gray-500'}`}>
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <p className="mt-2 text-center">Recruter Action</p>                
                         </div> 
                     </div>
 

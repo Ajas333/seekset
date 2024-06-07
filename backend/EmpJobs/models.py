@@ -20,6 +20,17 @@ class Jobs(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+class Question(models.Model):
+    job = models.ForeignKey(Jobs, on_delete=models.CASCADE, related_name='questions')
+    text = models.TextField()
+
+
+class Answer(models.Model):
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name='answers')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    answer_text = models.TextField()
+
     
 class SavedJobs(models.Model):
     candidate = models.ForeignKey(Candidate,on_delete=models.CASCADE)
@@ -29,6 +40,9 @@ class ApplyedJobs(models.Model):
     choice=(
         ("Application Send","Application Send"),
         ("Application Viewd","Application Viewd"),
+        ("Resume Viewd","Resume Viewd"),
+        ("Interview Sheduled","Interview Sheduled"),
+        ("Interview Cancelled","Interview Cancelled"),
         ("Accepted","Accepted"),
         ("Rejected","Rejected")
     )

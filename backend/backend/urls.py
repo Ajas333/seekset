@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/account/',include("account.api.urls")),
     path('api/empjob/',include("EmpJobs.api.urls")),
+    path('api/interview/',include("Interview.api.urls")),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

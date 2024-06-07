@@ -1,37 +1,111 @@
 import React,{useEffect,useState}from 'react'
 import axios from 'axios'
+import SheduleModal from '../../../components/employer/utilities/SheduleModal'
+import Swal from 'sweetalert2'
 
 function CandidateView({selectedJob,setChange,current}) {
     const baseURL='http://127.0.0.1:8000/'
-    const [applications,setApplications]=useState([])
     const token = localStorage.getItem('access')
-
-    
-    // useEffect(() => {
-    //     if(selectedJob){
-    //      setApplications(selectedJob.applications)
-    //     }
-    //  }, [selectedJob])
+    const [status,setStatus] = useState(false)
+    const [appStatus,setAppStatus]=useState(current.status)
+    const [modal,setModal] = useState(false)
+    const [applicationId,setApplicationId] = useState()
+    const value = ['Resume Viewd','Interview Sheduled','Accepted','Rejected','Interview Cancelled']
    
-    const handleAccept = async ()=>{
+    useEffect(()=>{
+        const val = value.filter((e)=>appStatus == e)
+        console.log("vallllllllllllllllllllllll",val)
+        if(val.length<1){
+            setStatus(true)
+        }
+    },[])
+
+    useEffect(()=>{
+        if(status){
+            changeStatus('Application Viewd')
+        }
+    },[status])
+  
+    const changeStatus = async (action)=>{
         try{
-            const responce = await axios.post(`${baseURL}api/empjob/jobStatus/${current.id}/`,{},{
+            const responce = await axios.post(`${baseURL}api/empjob/applicationStatus/${current.id}/`,{action},{
                 headers:{
-                  'Authorization': `Bearer ${token}`,
-                  'Accept' : 'application/json',
-                  'Content-Type': 'multipart/form-data'
-                }
-              });
-              console.log(responce)
+                    'Authorization': `Bearer ${token}`,
+                    'Accept' : 'application/json',
+                    'Content-Type': 'multipart/form-data'
+                  }
+            });
+            console.log(responce)
         }
         catch(error){
             console.log(error)
         }
     }
+   
+    const toggleModal = ()=>{
+        setModal(true)
+    } 
+
+    const handleInterview = async()=>{
+        changeStatus('Interview Sheduled')
+        const responce = await axios.post()
+    }
+    const handlResume = ()=>{
+        changeStatus('Resume Viewd')
+        setAppStatus('Resume Viewd')
+        console.log("resume change ststus.................")
+    }
+    const cancellApplication = async ()=>{
+        try{
+            const formData=new FormData()
+            formData.append("candidate_id",current.candidate.id)
+            formData.append("job_id",current.job)
+            const responce = await axios.post(`${baseURL}api/interview/cancellApplication/`,formData,{
+                headers:{
+                    'Authorization': `Bearer ${token}`,
+                    'Accept' : 'application/json',
+                    'Content-Type': 'multipart/form-data'
+                  }
+            })
+            console.log(responce)
+            if(responce.status == 200){
+                setAppStatus('Interview Cancelled')
+                Swal.fire({
+                    title: "Cancelled!",
+                    text: "Application Cancelled.",
+                    icon: "success"
+                  });
+            }
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+    const handleCancell = ()=>{
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to cancell the interview",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+          }).then((result) => {
+            if (result.isConfirmed) {
+                cancellApplication();
+              
+            }
+          });
+        
+    }
      console.log("candidate view applications......",current)
+     console.log("741852963",selectedJob)
+     console.log("statusssssssssssssssssssssssssssss",appStatus)
+     console.log("ststussssssssssssssss",status)
   return (
     <div className=''>
       <div className='bg-white rounded-md hover:shadow-md py-3 mb-4 relative'>
+      {modal && <SheduleModal  setModal={setModal} candidate_id={current.candidate.id} job_id={current.job} changeStatus={changeStatus} setAppStatus={setAppStatus}/>}
             <div className='absolute top-0 right-0 pr-3 pt-3 flex flex-col gap-2'>
                 <button onClick={()=> setChange(true)} type="button" className=" flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
                     <svg class="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -39,10 +113,23 @@ function CandidateView({selectedJob,setChange,current}) {
                     </svg>
                     <span>Go back</span>
                 </button>
-
-                <button className="px-6 py-1 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200"
-                  onClick={handleAccept}>Accept
+                {appStatus === 'Interview Cancelled' ?(
+                    <button className="px-6 py-1 rounded-full bg-gradient-to-b from-green-500 to-green-600 text-white font-bold focus:ring-2 focus:ring-green-400 hover:shadow-xl transition duration-200 disabled"
+                    >Cancelled
+                  </button>
+                ):appStatus === 'Interview Sheduled' ? (
+                    <button className="px-6 py-1 rounded-full bg-gradient-to-b from-red-500 to-red-600 text-white font-bold focus:ring-2 focus:ring-red-400 hover:shadow-xl transition duration-200"
+                    onClick={handleCancell}>Cansell Interview
+                  </button>
+                ):(
+                    <button className="px-6 py-1 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200"
+                  onClick={toggleModal}>Shedule Interview
                 </button>
+                )
+                   
+                }
+                
+                
 
                 <button className="px-6 py-1 rounded-full bg-gradient-to-b from-red-500 to-red-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200"
                 >Reject
@@ -133,6 +220,7 @@ function CandidateView({selectedJob,setChange,current}) {
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="text-blue-500 underline"
+                            onClick={handlResume}
                         >
                             View Resume
                         </a></p>

@@ -2,9 +2,11 @@ from rest_framework import serializers
 from account.models import *
 from EmpJobs.models import *
 
-
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'text']
 class PostJobSerializer(serializers.ModelSerializer):
-
     class Meta:
         model= Jobs
         exclude =('posteDate','active','industry','employer')
@@ -21,13 +23,18 @@ class EmployerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employer
         fields = ['profile_pic', 'user_full_name','headquarters','hr_name','hr_phone','hr_email','address','about','website_link']
-        
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = '__all__'
+
 class JobSerializer(serializers.ModelSerializer):
-    employer = EmployerSerializer()
-    
+    employer = EmployerSerializer()    
     class Meta:
         model = Jobs
         fields = "__all__"
+    
     
 class ApplyedJobSerializer(serializers.ModelSerializer):
     job=JobSerializer()
@@ -74,3 +81,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
         applications = ApplyedJobs.objects.filter(job=obj)
         serializer = ApplyedForJobsSerializer(applications, many=True)
         return serializer.data
+
+class SavedJobSerializer(serializers.ModelSerializer):
+    job=JobSerializer()
+    class Meta:
+        model = SavedJobs
+        fields = ['candidate','job']

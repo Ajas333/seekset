@@ -16,6 +16,7 @@ import PostJob from '../../pages/Employer/job/PostJob'
 import JobDetail from '../../pages/Employer/job/JobDetail'
 import Applications from '../../pages/Employer/job/Applications'
 import CandidateView from '../../pages/Employer/job/CandidateView'
+import Message from '../../pages/Employer/Message/Message'
 
 function EmployerWrapper() {
   const navigate=useNavigate()
@@ -64,12 +65,11 @@ function EmployerWrapper() {
 
 
   useEffect(() => {
-    if(!authentication_user.name)
-    {
-     
+    
+     console.log("ayyooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
       checkAuth();
     
-    }
+    
   
   }, [authentication_user])
 console.log("inside employer wrapper.................",authentication_user)
@@ -87,6 +87,7 @@ console.log("inside employer wrapper.................",authentication_user)
         <Route path='/jobdetail/:jobId' element={<JobDetail/>} ></Route>
         <Route path='/applications' element={<Applications/>}></Route>
         <Route path='/candidateView' element={<CandidateView/>}></Route>
+        <Route path='/message' element={<Message/>}></Route>
 
       </Routes>
       

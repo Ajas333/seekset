@@ -58,8 +58,9 @@ function EmployerHeader() {
             </p>
         </div>
         </Link>
-      
+        
         <div className='flex'>
+          
             <div className='pt-1 mx-2'>
               <hr className='h-10 border-l-4 border-solid border-gray-500' />
             </div>

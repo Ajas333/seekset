@@ -2,9 +2,10 @@ import React,{useState} from 'react'
 import SideBar from '../../../components/employer/SideBar'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import Qmodal from '../../../components/employer/utilities/Qmodal'
+import Swal from 'sweetalert2'
 
 function PostJob() {
-
   const baseURL='http://127.0.0.1:8000/'
   const token = localStorage.getItem('access')
   const [data,setData]=useState({
@@ -19,14 +20,48 @@ function PostJob() {
     "saleryfrom":"",
     "saleryto":""
   })
+  const [questions, setQuestions] = useState(['']);
+  const [modal,setModal] = useState(false)
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br  focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2",
+      cancelButton: "text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+    },
+    buttonsStyling: false
+  });
 
   const handleChange=(e)=>{
     setData({...data,[e.target.name]:e.target.value})
   }
   console.log(data)
 
-  const handleSubmit = async(e) =>{
+  const handleSubmitSwal = (e) =>{
     e.preventDefault()
+     swalWithBootstrapButtons.fire({
+      title: "Any Questions?",
+      text: "extra questions for the candidate!",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "No Submit!",
+      cancelButtonText: "Yes i have!",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleSubmit()
+        
+      } else if (
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        // swalWithBootstrapButtons.fire({
+        //   title: "Question Added",
+        //   icon: "success"
+        // });
+        setModal(true)
+      }
+    });
+  }
+
+  const handleSubmit = async() =>{
     const lpa= `${data.saleryfrom}-${data.saleryto}`
     console.log(lpa)
     const formData = new FormData()
@@ -39,6 +74,11 @@ function PostJob() {
     formData.append("applyBefore",data.applyBefore || "")
     formData.append("about" , data.about || "")
     formData.append("responsibility",data.responsibility || "")
+    questions.forEach((question, index) => {
+      if (question.trim() !== "") {
+        formData.append(`questions[${index}]`, question);
+      }
+    });
     try{
       const responce = await axios.post(baseURL+'api/empjob/postjob/',formData,{
         headers:{
@@ -49,6 +89,10 @@ function PostJob() {
       }
       })
       if(responce.status == 200){
+        swalWithBootstrapButtons.fire({
+          title: "Posted!",
+          icon: "success"
+        });
         setData({
           'title':"",
           'location':"",
@@ -61,7 +105,10 @@ function PostJob() {
           "saleryfrom":"",
           "saleryto":""
         })
+        setQuestions(['']);
+        setModal(false)
         console.log(data)
+
       }
     }
     catch(error){
@@ -70,22 +117,21 @@ function PostJob() {
     
     console.log(responce)
   }
+  
   return (
     <div className='pt-14 '>
     <SideBar/>
 
         <div className='p-4 sm:ml-64'>
-        <Link to={'/employer/home/'}>
-        <div className='bg-gray-50 cursor-pointer'>
-         Home
-        </div>
-        </Link>
+      {modal && <Qmodal  setModal={setModal} setQuestions={setQuestions} questions={questions} handleformSubmit={handleSubmit}/>}
+
+
                 <div>
                   <p>Post job here..</p>
                 </div>
                 <div className=' w-full flex justify-center'>
                    <div className='bg-purple-50 py-4 rounded-lg'>
-                   <form method='POST' onSubmit={handleSubmit}> 
+                   <form method='POST' onSubmit={handleSubmitSwal}> 
                       <div className='mx-20 w-4/5 '>
                         <div className='flex justify-center gap-2'>
                             
@@ -217,7 +263,10 @@ function PostJob() {
                              
                        
                       </div>
-                        <div className='flex justify-end mr-12'>
+                        <div className='flex justify-center mr-12 ml-12'>
+                            {/* <button type='button' onClick={()=>setModal(true)} className='bg-green-500 hover:bg-green-400 text-white font-semibold px-2 rounded'>
+                              Add Question
+                            </button> */}
                             <button type='submit' className="bg-blue-500 hover:bg-blue-400 text-white font-semibold px-2 rounded">
                             Submit
                             </button>
