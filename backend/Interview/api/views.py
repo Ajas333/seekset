@@ -62,12 +62,23 @@ class getShedulesView(APIView):
     permission_classes=[IsAuthenticated]
     def get(self,request):
         user = request.user
-        candidate = Candidate.objects.get(user=user)
-        print(user)
         try:
-            shedules=InterviewShedule.objects.filter(candidate=candidate)
+            try:
+                candidate = Candidate.objects.get(user=user)
+                shedules=InterviewShedule.objects.filter(candidate=candidate)
+            except Candidate.DoesNotExist:
+                employer = Employer.objects.get(user=user)
+                shedules=InterviewShedule.objects.filter(employer=employer)
+       
             print(shedules)
-        except:
-            pass
+            serializer = InterviewSheduleSerializer(shedules, many=True)
+            if serializer:
+                return Response (serializer.data,status=status.HTTP_200_OK)
+            
+        except (Candidate.DoesNotExist, Employer.DoesNotExist):
+            return Response({"message": "User is neither a candidate nor an employer"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 
-        return Response({"message":"application cancelled sucessfull"},status=status.HTTP_200_OK)

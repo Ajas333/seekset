@@ -16,7 +16,8 @@ import PostJob from '../../pages/Employer/job/PostJob'
 import JobDetail from '../../pages/Employer/job/JobDetail'
 import Applications from '../../pages/Employer/job/Applications'
 import CandidateView from '../../pages/Employer/job/CandidateView'
-import Message from '../../pages/Employer/Message/Message'
+import Chat from '../../pages/Employer/Message/Chat'
+import Shedules from '../../pages/Employer/Interview/Shedules'
 
 function EmployerWrapper() {
   const navigate=useNavigate()
@@ -87,7 +88,8 @@ console.log("inside employer wrapper.................",authentication_user)
         <Route path='/jobdetail/:jobId' element={<JobDetail/>} ></Route>
         <Route path='/applications' element={<Applications/>}></Route>
         <Route path='/candidateView' element={<CandidateView/>}></Route>
-        <Route path='/message' element={<Message/>}></Route>
+        <Route path='/chat' element={<Chat/>}></Route>
+        <Route path='/shedules' element={<Shedules/>}></Route>
 
       </Routes>
       

@@ -15,6 +15,7 @@ function EmpHome() {
       const responce = await axios.get(baseURL+'api/empjob/getjobs/',{
         headers:{
           'Authorization': `Bearer ${token}`,
+          
           'Accept' : 'application/json',
           'Content-Type': 'multipart/form-data'
       }

@@ -20,6 +20,7 @@ import ApplyedJob from '../../pages/Candidate/jobs/ApplyedJob'
 import Profile from '../../pages/Candidate/Profile/Profile'
 import SavedJobs from '../../pages/Candidate/jobs/SavedJobs'
 import SheduledInterviews from '../../pages/Candidate/Interview/SheduledInterviews'
+import Message from '../../pages/Candidate/Message/Message'
 
 
 
@@ -95,7 +96,8 @@ console.log("inside candidate wrapper.................",authentication_user)
           <Route path='/profile' element={<Profile/>}></Route>
           <Route path='/savedjobs' element={<SavedJobs/>}></Route>
           <Route path='/shedules' element={<SheduledInterviews/>}></Route>
-          
+          <Route path='/message' element={<Message/>}></Route>
+           
         </Routes>
     </div>
   )

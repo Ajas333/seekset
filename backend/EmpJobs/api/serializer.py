@@ -84,6 +84,7 @@ class ApplyedForJobsSerializer(serializers.ModelSerializer):
 
 class ApplicationSerializer(serializers.ModelSerializer):
     employer_name = serializers.SerializerMethodField()
+    employer_id = serializers.SerializerMethodField()
     applications = serializers.SerializerMethodField()
     questions = serializers.SerializerMethodField()
     class Meta:
@@ -93,6 +94,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def get_employer_name(self, obj):
         return obj.employer.user.full_name
     
+    def get_employer_id(self,obj):
+        return obj.employer.id
+
     def get_applications(self, obj):
         applications = ApplyedJobs.objects.filter(job=obj)
         serializer = ApplyedForJobsSerializer(applications, many=True)

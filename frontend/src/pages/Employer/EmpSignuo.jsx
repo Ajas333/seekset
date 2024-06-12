@@ -5,7 +5,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2'
 
 
-function EmpSignup() {
+function 
+EmpSignup() {
 
     const [values,setValues]=useState({
         username:"",

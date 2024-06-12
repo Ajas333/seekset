@@ -79,10 +79,12 @@ function CandidateHeader() {
               <hr className='h-10 border-l-4 border-solid border-gray-500' />
             </div>
             <div className='flex gap-7 px-3 items-center'>
+                <Link to={'/candidate/message/'}>
                 <div className='flex flex-col justify-center items-center'>
                     <MdOutlineMessage className='w-5 h-5 '/>
                       <p className='text-xs font-medium text-gray-500'>Message</p>
                 </div>
+                </Link>
                 <div className='flex flex-col justify-center items-center'>
                     <FaEnvelopeOpenText  className='w-5 h-5 '/>
                       <p className='text-xs font-medium text-gray-500'>Accepted jobs</p>

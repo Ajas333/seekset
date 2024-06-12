@@ -5,10 +5,10 @@ from EmpJobs.models import *
 
 class InterviewShedule(models.Model):
     choice={
-        ("Waiting","Waiting"),
+        ("Upcoming","Upcoming"),
         ("Selected","Selected"),
         ("Canceled","Canceled"),
-        ("You are late","You are late")
+        ("You missed","You missed")
     }
     candidate = models.ForeignKey(Candidate, on_delete = models.CASCADE,related_name="candidate")
     employer = models.ForeignKey(Employer, on_delete = models.CASCADE,related_name="employer")
@@ -16,4 +16,4 @@ class InterviewShedule(models.Model):
     date = models.DateTimeField()
     selected = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
-    status = models.CharField(max_length=20,choices=choice, default="Waiting")
+    status = models.CharField(max_length=20,choices=choice, default="Upcoming")
