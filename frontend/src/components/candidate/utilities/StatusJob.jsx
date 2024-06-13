@@ -1,9 +1,13 @@
 import React, { useState,useEffect } from 'react'
+import { RiMessage2Fill } from "react-icons/ri";
+import ChatModal from './ChatModal';
 
 function StatusJob({selectedJob}) {
     const [step,setStep]=useState(0)
+    const [chat,setChat]=useState(false)
+    const baseURL='http://127.0.0.1:8000'
     
-   
+
     useEffect(() => {
         if (selectedJob && selectedJob.status) {
             if (selectedJob.status === "Application Send") {
@@ -28,15 +32,29 @@ function StatusJob({selectedJob}) {
       if (!selectedJob) {
         return null; // or a loading spinner or message
       }
- 
+      
+      const handleChat = ()=>{
+        setChat(true)
+    }
       
     console.log("inside status job component",selectedJob)
     console.log("step.................",step)
-   
+    console.log(selectedJob.job.employer.profile_pic)
     
+    const profile_pic = baseURL+selectedJob.job.employer.profile_pic
+    const userName = selectedJob.job.employer.user_full_name
+    const candidate_id = selectedJob.candidate
+    const employer_id = selectedJob.job.employer.id
+    const candidate_name = selectedJob.candidate_name
+
+
   return (
     <div>
-      <div className=' bg-white mb-2 p-3 rounded-md px '>
+      <div className=' bg-white mb-2 p-3 rounded-md px  relative'>
+        {chat && <ChatModal candidate_name={candidate_name} profile_pic={profile_pic} userName={userName} setChat={setChat} candidate_id={candidate_id} employer_id={employer_id}/>}
+        <div className='absolute top-0 right-0 p-2 text-gray-500'>
+        <RiMessage2Fill  size={25} className='cursor-pointer' onClick={handleChat}/>
+        </div>
                     <div className=''>
                         <p className='text-xl font-bold text-gray-800'>{selectedJob.job.title}</p>
                         <span>{selectedJob.job.employer.user_full_name}</span>

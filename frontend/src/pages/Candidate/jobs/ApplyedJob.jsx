@@ -13,13 +13,6 @@ function ApplyedJob() {
     const [jobData, setJobData] = useState([])
     const [selectedJob, setSelectedJob] = useState(null);
 
-
-    useEffect(() => {
-       if(!authentication_user.isAuthenticated){
-        navigate('/candidate/')
-       }
-    }, [authentication_user])
-
     useEffect(() => {
             const fetchApplyedJobs = async ()=>{
                 try{
@@ -30,7 +23,7 @@ function ApplyedJob() {
                           'Content-Type': 'multipart/form-data'
                       }
                       })
-                      console.log(responce)
+                      console.log("responvce from backend job data",responce)
                       if(responce.status == 200){
                         setJobData(responce.data)
                         setSelectedJob(responce.data[0]);

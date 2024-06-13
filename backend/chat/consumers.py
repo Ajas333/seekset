@@ -30,19 +30,20 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         for message in existing_messages:
             await self.send(text_data=json.dumps({
                 'message': message['message'],
+                'sendername':message['sendername'],
             }))
 
     @database_sync_to_async
     def get_existing_messages(self):
         messages = ChatMessage.objects.filter(candidate=self.candidate, employer=self.employer)
-        return [{'message': message.message} for message in messages]
+        return [{'message': message.message , 'sendername':message.sendername} for message in messages]
 
 
     @database_sync_to_async
     def get_candidate_instance(self, candidate_id):
         try:
             candidate = Candidate.objects.get(id=candidate_id)
-            candidate.user  # This will force the related object to be cached
+            candidate.user  
             return candidate
         except Candidate.DoesNotExist:
             return None
@@ -51,7 +52,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     def get_employer_instance(self, employer_id):
         try:
             employer = Employer.objects.get(id=employer_id)
-            employer.user  # This will force the related object to be cached
+            employer.user  
             return employer
         except Employer.DoesNotExist:
             return None
@@ -88,6 +89,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             'message': message,
             'sendername': sendername,
         }))
+
     
     @classmethod
     async def send_chat_message(cls, candidate_id,employer_id,message):
@@ -108,6 +110,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     @database_sync_to_async
     def save_message_to_db(self,candidate,employer,sendername,message):
         try:
+            print("inside save function.....",message,sendername)
             ChatMessage.objects.create(
                 candidate = candidate,
                 employer = employer,

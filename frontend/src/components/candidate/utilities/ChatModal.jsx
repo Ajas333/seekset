@@ -1,13 +1,11 @@
-  import React, { useRef, useState,useEffect } from 'react'
-  import { w3cwebsocket as W3CWebSocket } from "websocket";
-  import axios from 'axios';
-  import { IoSend } from "react-icons/io5";
+import React, { useRef, useState,useEffect } from 'react'
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { IoSend } from "react-icons/io5";
 
-  function ChatModal({setChat,profile_pic,userName,emp_name,candidate_id,employer_id}) {
+function ChatModal({candidate_name,profile_pic,userName,setChat,candidate_id,employer_id}) {
 
       const  modalRef = useRef();
       const baseURL='http://127.0.0.1:8000/'
-
       const [chatMessages, setChatMessages] = useState([]);
       const [client, setClient] = useState(null); 
       const [message, setMessage] = useState("");
@@ -18,63 +16,59 @@
           setChat();
           }
         }
-       
+
         useEffect(()=>{
-          console.log("hellllllllllllllloooooooooooooooooooooooooooooo")
-          const connectToWebSocket =(candidate_id,employer_id) =>{
-            if(!candidate_id || !employer_id) return ;
-            
-            const newClint = new W3CWebSocket(
-                `${baseURL}ws/chat/${candidate_id}/${employer_id}/`
-            );
-            setClient(newClint);
-            newClint.onopen = () => {
-                console.log("WebSocket Client Connected");
-    
-              };
-              newClint.onmessage = (message) => {
-                console.log("ayyooooooooooooooooooooooooooooooooooooooooooooooooooooo")
-                const data = JSON.parse(message.data);
-                setChatMessages((prevMessages) => [...prevMessages, data]);
-               
-            };
-            console.log("set chat messages from websocket",chatMessages)          
-              return () => {
-                  newClint.close();
-                  };                
-                };
-            connectToWebSocket(candidate_id,employer_id);
-
-        },[candidate_id,employer_id])
-
-
-        const sendMessage = () =>{
-          if (!client || client.readyState !== client.OPEN) {
-              console.error("WebSocket is not open");
-              return;
-            }
-            const sendername = emp_name
-            console.log("SENDER NAME:", sendername);
-            const messageData = { message, sendername };
-            const messageString = JSON.stringify(messageData);
-            console.log("Sending Message:", messageString);
-            client.send(messageString);
-            setMessage("");
-        }
-
-        useEffect(() => {
-          const scrollToBottom = () => {
-            if (chatMessagesRef.current) {
-              chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-            }
-          };
+            console.log("hellllllllllllllloooooooooooooooooooooooooooooo")
+            const connectToWebSocket =(candidate_id,employer_id) =>{
+              if(!candidate_id || !employer_id) return ;
+              
+              const newClint = new W3CWebSocket(
+                  `${baseURL}ws/chat/${candidate_id}/${employer_id}/`
+              );
+              setClient(newClint);
+              newClint.onopen = () => {
+                  console.log("WebSocket Client Connected");
       
-          scrollToBottom();
-        }, [chatMessages]);
+                };
+                newClint.onmessage = (message) => {
+                  console.log("ayyooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+                  const data = JSON.parse(message.data);
+                  setChatMessages((prevMessages) => [...prevMessages, data]);
+              };
+              console.log("set chat messages from websocket",chatMessages)          
+                return () => {
+                    newClint.close();
+                    };                
+                  };
+              connectToWebSocket(candidate_id,employer_id);
+  
+          },[candidate_id,employer_id])
 
-        // console.log("chat messages.................",chatMessages)
-    return (
-      <div ref={modalRef} onClick={closeModal} className="fixed inset-0   flex justify-end items-end z-50">
+        const sendMessage = ()=>{
+            if (!client || client.readyState !== client.OPEN) {
+                console.error("WebSocket is not open");
+                return;
+              }
+              const sendername = candidate_name
+              console.log("SENDER NAME:", sendername);
+              const messageData = { message, sendername };
+              const messageString = JSON.stringify(messageData);
+              console.log("Sending Message:", messageString);
+              client.send(messageString);
+              setMessage("");
+        }
+        useEffect(() => {
+            const scrollToBottom = () => {
+              if (chatMessagesRef.current) {
+                chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+              }
+            };
+        
+            scrollToBottom();
+          }, [chatMessages]);
+
+  return (
+    <div ref={modalRef} onClick={closeModal} className="fixed inset-0   flex justify-end items-end z-50">
           <div className='bg-blue-100 w-96 h-96 rounded-md mr-5 relative'>
                   <div className='bg-blue-300  w-full flex px-4 gap-2 py-2'>
                     <div className='h-8 w-8 e'>
@@ -83,9 +77,9 @@
                     <p className='text-gray-700 font-bold'>{userName}</p>
                   </div>
                   <div className='chat-area flex-grow overflow-auto p-2 max-h-64' ref={chatMessagesRef}>
-                    {chatMessages.map((msg, index) => (
+                  {chatMessages.map((msg, index) => (
                           <div key={index}>
-                            {msg.sendername == emp_name ? (
+                            {msg.sendername == candidate_name ? (
                               <div className=' flex w-full justify-end'>
                                   <div className="chat-message bg-white p-2 my-1 rounded-lg max-w-72 shadow">
                                        <strong>{msg.sendername}</strong>: {msg.message}
@@ -121,7 +115,7 @@
                   </div>
           </div>
     </div>
-    )
-  }
+  )
+}
 
-  export default ChatModal
+export default ChatModal

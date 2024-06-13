@@ -22,7 +22,7 @@ class EmployerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employer
-        fields = ['profile_pic', 'user_full_name','headquarters','hr_name','hr_phone','hr_email','address','about','website_link']
+        fields = ['profile_pic','id', 'user_full_name','headquarters','hr_name','hr_phone','hr_email','address','about','website_link']
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,9 +38,14 @@ class JobSerializer(serializers.ModelSerializer):
     
 class ApplyedJobSerializer(serializers.ModelSerializer):
     job=JobSerializer()
+    candidate_name = serializers.SerializerMethodField()
     class Meta:
         model = ApplyedJobs
-        fields = ['id', 'job', 'status', 'applyed_on']
+        fields = ['id', 'job', 'status','candidate','applyed_on','candidate_name']
+    def get_candidate_name(self,obj):
+        candidate = Candidate.objects.get(id=obj.candidate_id)  
+        return candidate.user.full_name
+    
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:

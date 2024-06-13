@@ -7,7 +7,7 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import ChatModal from '../../../components/employer/utilities/ChatModal';
 
 function CandidateView({selectedJob,setChange,current,questions}) {
-    const baseURL='http://127.0.0.1:8000/'
+    const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access')
     const [status,setStatus] = useState(false)
     const [appStatus,setAppStatus]=useState(current.status)
@@ -15,10 +15,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
     const [chat,setChat]=useState(false)
     const [applicationId,setApplicationId] = useState()
 
-    const [chatMessages, setChatMessages] = useState([]);
-    const [client, setClient] = useState(null); 
-    const [message, setMessage] = useState("");
-    
+
     const value = ['Resume Viewd','Interview Sheduled','Accepted','Rejected','Interview Cancelled']
     const profile_pic = baseURL+current.candidate.profile_pic
     const userName = current.candidate.user_name
@@ -27,7 +24,6 @@ function CandidateView({selectedJob,setChange,current,questions}) {
     const emp_name = selectedJob.employer_name
 
     
-   
     useEffect(()=>{
         const val = value.filter((e)=>appStatus == e)
         console.log("vallllllllllllllllllllllll",val)
@@ -44,7 +40,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
   
     const changeStatus = async (action)=>{
         try{
-            const responce = await axios.post(`${baseURL}api/empjob/applicationStatus/${current.id}/`,{action},{
+            const responce = await axios.post(`${baseURL}/api/empjob/applicationStatus/${current.id}/`,{action},{
                 headers:{
                     'Authorization': `Bearer ${token}`,
                     'Accept' : 'application/json',
@@ -75,7 +71,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
             const formData=new FormData()
             formData.append("candidate_id",current.candidate.id)
             formData.append("job_id",current.job)
-            const responce = await axios.post(`${baseURL}api/interview/cancellApplication/`,formData,{
+            const responce = await axios.post(`${baseURL}/api/interview/cancellApplication/`,formData,{
                 headers:{
                     'Authorization': `Bearer ${token}`,
                     'Accept' : 'application/json',
@@ -109,49 +105,26 @@ function CandidateView({selectedJob,setChange,current,questions}) {
             if (result.isConfirmed) {
                 cancellApplication();
             }
-          });
-        
+          });  
     }
-    const connectToWebSocket =(candidate_id,employer_id) =>{
-        if(!candidate_id || !employer_id) return ;
-        
-        const newClint = new W3CWebSocket(
-            `${baseURL}ws/chat/${candidate_id}/${employer_id}/`
-        );
-        setClient(newClint);
-        newClint.onopen = () => {
-            console.log("WebSocket Client Connected");
 
-          };
-          newClint.onmessage = (message) => {
-            const data = JSON.parse(message.data);
-            setChatMessages((prevMessages) => [...prevMessages, data]);
-        };       
-
-          return () => {
-            newClint.close();
-          };
-
-        };
+    
 
     const handleChat = ()=>{
-        setChatMessages([])
         setChat(true)
-        connectToWebSocket(candidate_id,employer_id)
     }
 
-
-
-     console.log("candidate view applications......",current)
-     console.log("741852963",selectedJob)
-     console.log("statusssssssssssssssssssssssssssss",appStatus)
-     console.log("ststussssssssssssssss",status)
+    //  console.log("candidate view applications......",current)
+    //  console.log("741852963",selectedJob)
+    //  console.log("statusssssssssssssssssssssssssssss",appStatus)
+    //  console.log("ststussssssssssssssss",status)
+    
      
   return (
     <div className=''>
       <div className=''>
       {modal && <SheduleModal  setModal={setModal} candidate_id={current.candidate.id} job_id={current.job} changeStatus={changeStatus} setAppStatus={setAppStatus}/>}
-      {chat && <ChatModal setChat={setChat} profile_pic={profile_pic} userName={userName} emp_name={emp_name} chatMessages={chatMessages} client={client}/>}
+      {chat && <ChatModal candidate_id={candidate_id} employer_id={employer_id} setChat={setChat} profile_pic={profile_pic} userName={userName} emp_name={emp_name} />}
             <div className='absolute right-10 pr-3 pt-3 flex flex-col gap-2 '>
                 <button onClick={()=> setChange(true)} type="button" className=" flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
                     <svg class="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
