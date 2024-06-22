@@ -28,7 +28,7 @@ function EmployerHeader() {
         usertype:null,
       })
     );
-    navigate('/employer/')
+    navigate('/login')
    }
     
     const items = [

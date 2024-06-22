@@ -8,12 +8,14 @@ import axios from 'axios';
 import {useNavigate } from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 import { set_user_basic_details } from '../../../Redux/UserDetails/userBasicDetailsSlice';
-
-
+import { Formik,Field,Form,ErrorMessage } from 'formik';
+import user_default from '../../../assets/user_default.jpg'
+import { RiPencilFill } from "react-icons/ri";
+import ProfilepicModal from '../../../components/ProfilepicModal';
+import { ProfileDataSchema,initialValues } from '../../../validation/CandidateProfileValidation';
 
 
 function ProfileCreation() {
-
 
   const baseURL='http://127.0.0.1:8000/'
   const token = localStorage.getItem('access'); 
@@ -23,9 +25,13 @@ function ProfileCreation() {
   const [skill, setSkill] = useState('');
   const navigate=useNavigate();
   const dispatch=useDispatch();
-  const [profile_pic, setProfilepic] = useState({
-    image: null
-  });
+  const [profile_pic, setProfilepic] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
+  const [modal, setModal] = useState(false);
+  const [croppedImageUrl, setCroppedImageUrl] = useState('');
+  const [imgError,setImgError] = useState('')
+
+
   const [resume, setResume] = useState({
     resume: null
   });
@@ -60,7 +66,21 @@ function ProfileCreation() {
   };
 
   const handleImageChange = (e) => {
-    setProfilepic({ image: e.target.files[0] });
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        
+        setImageUrl(reader.result);
+      };
+      setModal(true)
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCropSubmit = (croppedUrl) => {
+    setCroppedImageUrl(croppedUrl); 
+    setModal(false); 
   };
 
   const handleResumeChange = (e) => {
@@ -75,27 +95,58 @@ function ProfileCreation() {
     }));
   };
 
-  const handleSubmit =async(e) =>{
-    e.preventDefault()
+  // console.log("image uploaded.......",imageUrl)
+  useEffect(()=>{
+    const convertBase64ToImage = (base64String) => {
+      
+      const base64Pattern = /^data:image\/(png|jpeg|jpg);base64,/;
+    if (!base64Pattern.test(base64String)) {
+      console.error('Invalid base64 string');
+      return;
+    }   
+    const base64Content = base64String.replace(base64Pattern, '');
+    const binaryString = window.atob(base64Content);
+    const length = binaryString.length;
+    const byteArray = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+      byteArray[i] = binaryString.charCodeAt(i);
+    }
+    const blob = new Blob([byteArray], { type: 'image/png' });
+    const file = new File([blob], 'profile_pic.png', { type: 'image/png' });
+    setProfilepic(file);
+    };
+    convertBase64ToImage(croppedImageUrl)
+    console.log("cropped image url............",croppedImageUrl)
+  },[croppedImageUrl])
+
+
+  useEffect(()=>{
+      console.log("profile piccture after crop",profile_pic)
+  },[profile_pic])
+
+  const handleSubmit =async(values,{setSubmitting}) =>{
+
+    console.log(values)
     
     const skill=skills.toString()
     
     const formData=new FormData();
     formData.append("email",authentication_user.email)
-    formData.append("phone", data.phone || "");
-    formData.append("dob", data.dob || "");
-    formData.append("Gender", data.gender || "");
-    if (profile_pic.image) {
-      formData.append("profile_pic", profile_pic.image, profile_pic.image.name);
+    formData.append("place",values.place)
+    formData.append("phone", values.phone);
+    formData.append("dob", values.dob);
+    formData.append("Gender", values.gender);
+    if (profile_pic) {
+      formData.append("profile_pic", profile_pic);
     }
-    formData.append("education", data.education || "");
-    formData.append("specilization", data.specilization || "");
-    formData.append("college", data.college || "");
-    formData.append("completed", data.completed || "");
-    formData.append("mark", data.mark || "");
+    formData.append("education", values.education);
+    formData.append("specilization", values.specilization);
+    formData.append("college", values.college);
+    formData.append("completed", values.completed);
+    formData.append("mark", values.mark);
     formData.append("skills",skill);
-    formData.append("linkedin", data.linkedin || "");
-    formData.append("github", data.github || "");
+    formData.append("linkedin", values.linkedin);
+    formData.append("github", values.github);
     if (resume.resume) {
       formData.append("resume", resume.resume, resume.resume.name);
     }
@@ -115,11 +166,13 @@ function ProfileCreation() {
               profile_pic : responce.data.data.profile_pic
             })
           )
-          navigate('/candidate/home/')
+          navigate('/candidate/')
         }
     }
     catch(error){
         console.log("error",error)
+    }finally{
+      setSubmitting(false)
     }
 
   }
@@ -140,7 +193,7 @@ function ProfileCreation() {
       <div className='absolute m-2'>
         <img src={logo} alt="" className='w-12 h-10' />
       </div>
-      <div className='flex w-full h-screen bg-blue-50'>
+      <div className='flex w-full bg-blue-50'>
         <div className='hidden md:inline md:w-2/5 '>
           <div className='mt-16 mx-4  md:w-full'>
             <h3 className='font-sans text-3xl font-bold drop-shadow-md text-blue-800'>Complete Your Profile</h3>
@@ -155,9 +208,9 @@ function ProfileCreation() {
             </ul>
           </div>
         </div>
-        <div className='w-full h-screen md:w-3/5 flex justify-end'>
-          <div className='bg-white w-full h-full md:rounded-l-lg shadow-2xl'>
-            <div className='h-full '>
+        <div className='w-full  md:w-3/5 flex justify-end  '>
+          <div className='bg-white w-full md:rounded-l-lg shadow-2xl py-12'>
+            <div className=' '>
               {/* numbers */}
               <div className='flex mt-16 md:mt-8 h-12 w-full justify-center'>
                 <div>
@@ -182,144 +235,250 @@ function ProfileCreation() {
                   </div>
                 </div>
               </div>
-              {/* about me content */}
               <div>
                 {step === 1 && (<p className='text-2xl font-medium mx-3 mt-3 text-blue-800'>About me</p>)}
-                {step === 2 && (<p className='text-2xl font-medium mx-3 mt-3 text-blue-800'>Education</p>)}
+                {step === 2 && (<p className='text-2xl font-medium mx-3 mt-3 text-blue-800'>Highest Education</p>)}
                 {step === 3 && (<p className='text-2xl font-medium mx-3 mt-3 text-blue-800'>Skills</p>)}
 
                 <div className="mt-4 ">
-                  <form method='POST' onSubmit={handleSubmit}>
-                    {step === 1 && (
-                      <div className='aboutme mx-20 w-4/5 '>
-                        <div className='flex justify-center'>
-                          <input type="text" placeholder='Username' value={authentication_user.name}
-                            className="w-full mb-5 mx-2 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                            readOnly
-                          />
-                          <input type="text" placeholder='Mobile Number' name="phone" onChange={handleChange} value={data.phone}
-                            className="flex items-center w-full mb-5 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          />
-                        </div>
-                        <div className='flex'>
-                          <input type="text" placeholder='Email' value={authentication_user.email}
-                            className="flex items-center w-full mb-5 mx-2 px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                            readOnly
-                          />
-                        </div>
-                        <div className='flex justify-center'>
-                          <input type="date" placeholder='Date Of Birth' name="dob" onChange={handleChange} value={data.dob}
-                            className="w-full mb-5 mx-2 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          />
-                          <select name="gender" onChange={handleChange} value={data.gender}
-                            className="flex items-center w-full mb-5 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          >
-                            <option value="">Select</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="others">Others</option>
-                          </select>
-                        </div>
-                        <div className='px-2'>
-                          <label htmlFor="profile_pic" className='text-gray-500 ml-2'>Profile Image</label>
-                          <input type="file" name="profile_pic" onChange={handleImageChange}
-                            className="flex items-center w-full mb-5 px-3 py-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          />
-                        </div>
-                      </div>
-                    )}
-                    {step === 2 && (
-                      <div className='education mx-20 w-4/5 '>
-                        <p className='text-sm font-medium text-gray-400 mb-3'>Highest Education</p>
-                        <div className='flex justify-center'>
-                          <select name="education" onChange={handleChange} value={data.education}
-                            className="flex items-center w-full mb-5 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          >
-                            <option value="">Select</option>
-                            <option value="10th">10th</option>
-                            <option value="higher_secondary">Higher Secondary</option>
-                            <option value="graduation">Graduation</option>
-                            <option value="post_graduation">Post Graduation</option>
-                            <option value="iti">ITI</option>
-                            <option value="diploma">Diploma</option>
-                          </select>
-                          <input type="text" placeholder='Specialization' name="specilization" onChange={handleChange} value={data.specilization}
-                            className="flex items-center w-full mb-5 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          />
-                        </div>
-                        <div className='flex'>
-                          <input type="text" placeholder='School/College' name="college" onChange={handleChange} value={data.college}
-                            className="flex items-center w-full mb-5 mx-2 px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          />
-                        </div>
-                        <div className='flex justify-center'>
-                          <input type="date" placeholder='Completed On' name="completed" onChange={handleChange} value={data.completed}
-                            className="w-full mb-5 mx-2 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          />
-                          <input type="text" placeholder='Mark in CGPA' name="mark" onChange={handleChange} value={data.mark}
-                            className="flex items-center w-full mb-5 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                          />
-                        </div>
-                      </div>
-                    )}
-                    {step === 3 && (
-                      <>
-                        <div className='skills mx-20 w-4/5 '>
-                          <div className='flex'>
-                            <input type="text" placeholder='Add Skill' name="skills"
-                              value={skill}
-                              className="flex items-center w-full mb-5 mx-2 px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                              onChange={handleSkill}
-                            />
-                            <div onClick={handleAddSkill} className="h-8 cursor-pointer bg-blue-700 hover:bg-blue-400 text-white font-semibold px-2 rounded">
-                              Add
+                  <Formik
+                    initialValues={initialValues}
+                    validationSchema={ProfileDataSchema}
+                    onSubmit={handleSubmit}
+                  >
+                    {({errors,touched,isSubmitting})=>(
+                      <Form >
+                          {/* about me content */}
+                          {step === 1 && (
+                            <div className='aboutme mx-20 w-4/5 '>
+                                {/* Username and mobile number */}
+                                <div className='flex  gap-2'>
+                                  <div className='flex flex-col w-1/2 '>
+                                    <label htmlFor="username" className='text-gray-500 font-semibold ml-2'>Username</label>
+                                    <input type="text" name='username' placeholder='Username' value={authentication_user.name}
+                                      className="w-full mb-5  px-4 py-3  text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
+                                      readOnly
+                                    />
+                                  </div>
+                                  <div className='flex flex-col w-1/2 '>
+                                    <label htmlFor="phone" className='text-gray-500 font-semibold ml-3'>Mobile Number</label>
+                                      <Field type="text" placeholder='Type here' name="phone" 
+                                        className={`flex ${errors.phone && touched.phone? 'border-red-500':''} items-center w-full mb-5 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                      />
+                                      <ErrorMessage name='phone' component='div' className='text-red-500 text-sm mb-2' />
+                                  </div>
+                                </div>
+                                {/* Email and Place */}
+                                <div className='flex gap-2'>
+                                  <div className='flex flex-col w-1/2'>
+                                    <label htmlFor="email" className='text-gray-500 font-semibold ml-3'>Email</label>
+                                      <input type="text" placeholder='Email' value={authentication_user.email}
+                                        className="flex items-center w-full mb-5  px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
+                                        readOnly
+                                      />
+                                  </div>
+                                  <div className='flex flex-col w-1/2'>
+                                      <label htmlFor="place" className='text-gray-500 font-semibold ml-3'>Place</label>
+                                      <Field type="text" placeholder='Type here' name="place" 
+                                        className={`flex ${errors.place && touched.place ? 'border-red-500':''} items-center w-full mb-5 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                      />
+                                      <ErrorMessage name='place' component='div' className='text-red-500 text-sm mb-2' />
+
+                                  </div>
+                                </div>
+                                {/* date of birth and gender */}
+                                <div className='flex  gap-2'>
+                                  <div className='flex flex-col w-1/2'>
+                                    <label htmlFor="dob"  className='text-gray-500 font-semibold ml-3'>Date of Birth</label>
+                                    <Field type="date" placeholder='Date Of Birth' name="dob" 
+                                      className={`w-full  ${errors.dob && touched.dob? 'border-red-500':''} mb-5 px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                    />
+                                  <ErrorMessage name='dob' component='div' className='text-red-500 text-sm mb-2' />
+
+                                  </div>
+                                  <div className='flex flex-col w-1/2'>
+                                  <label htmlFor="gender"  className='text-gray-500 font-semibold ml-3'>Gender</label>
+                                    <Field as="select" name="gender" 
+                                      className={`flex  ${errors.gender && touched.gender? 'border-red-500':''} items-center w-full mb-5 px-4 py-3  text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                    >
+                                      <option value="">Select</option>
+                                      <option value="male">Male</option>
+                                      <option value="female">Female</option>
+                                      <option value="others">Others</option>
+                                    </Field>
+                                  <ErrorMessage name='gender' component='div' className='text-red-500 text-sm mb-2' />
+
+                                  </div>
+                                </div>
+                                {/* profile image */}
+                                <div className='flex'>
+                                  <div className='flex flex-col'>
+                                    {imgError && <p className='text-red-500 text-xs'>{imgError}</p>}
+                                    <label htmlFor="profile_pic" className='text-gray-500 font-semibold ml-3'>Profile Image</label>
+                                    <input type="file" accept=".jpg,.jpeg,.png" name="profile_pic" onChange={handleImageChange}
+                                      className="flex items-center w-full mb-5 px-3 py-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
+                                    />
+                                  </div>
+                                  <div>
+                                  </div>                            
+                                  <div className='w-3/5 '>                          
+                                      <div className='flex flex-col items-center'>
+                                          <div className='relative'>
+                                          {croppedImageUrl && (
+                                            <img src={croppedImageUrl} alt="Avatar" className='w-[150px] h-[150px] rounded-full border-2 border-gray-400' />
+                                          )}
+                                          </div>
+                                      </div>
+                                  </div>
+                                  
+                                </div>
                             </div>
-                          </div>
-                          <div className='mx-24 skills-list mt-5 flex flex-wrap'>
-                            {skills.map((skill, index) => (
-                              <div key={index} className='mr-2 mb-2 px-2 pb-1 skill-item bg-green-200 rounded-md flex'>
-                                <span className="text-sm font-medium text-gray-600">{skill}</span>
-                                <span className='mt-1 ml-1 cursor-pointer' onClick={() => handleRemoveSkill(index)}><CiCircleRemove /></span>
+                          )}
+                          {modal && <ProfilepicModal setCroppedImageUrl={setCroppedImageUrl} setImageUrl={setImageUrl} setImgError={setImgError} imageUrl={imageUrl} closeModal={() => setModal(false)} onCropSubmit={handleCropSubmit} />}
+
+                          {/* Education details */}
+                          {step === 2 && (
+                            <div className='education mx-20 w-4/5 '>
+                              {/* education and spesialization */}
+                              <div className='flex  gap-2'>
+                                <div className="flex flex-col w-1/2">
+                                  <label htmlFor="education" className='text-gray-500 font-semibold ml-2'>Education</label>
+                                    <Field as="select" name="education"
+                                      className={`flex  ${errors.phone && touched.phone? 'border-red-500':''} items-center w-full mb-5 px-4 py-3  text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                    >
+                                      <option value="">Select</option>
+                                      <option value="10th">10th</option>
+                                      <option value="higher_secondary">Higher Secondary</option>
+                                      <option value="graduation">Graduation</option>
+                                      <option value="post_graduation">Post Graduation</option>
+                                      <option value="iti">ITI</option>
+                                      <option value="diploma">Diploma</option>
+                                    </Field>
+                                  <ErrorMessage name='education' component='div' className='text-red-500 text-sm mb-2' />
+
+                                </div>
+                                <div className="flex flex-col w-1/2">
+                                  <label htmlFor="specilization" className='text-gray-500 font-semibold ml-2'>Specialization</label>
+                                  <Field type="text" placeholder='Type here' name="specilization" 
+                                    className={`flex ${errors.phone && touched.phone? 'border-red-500':''} items-center w-full mb-5 px-4 py-3  text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                  />
+                                  <ErrorMessage name='specilization' component='div' className='text-red-500 text-sm mb-2' />
+                                </div>
                               </div>
-                            ))}
+                              {/* collage name */}
+                              <div className='flex flex-col'>
+                                <label htmlFor="college" className='text-gray-500 font-semibold ml-2'>College Name</label>
+                                  <Field type="text" placeholder='School/College' name="college" 
+                                    className={`flex ${errors.phone && touched.phone? 'border-red-500':''} items-center w-full mb-5  px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                  />
+                                  <ErrorMessage name='college' component='div' className='text-red-500 text-sm mb-2' />
+
+                              </div>
+                              {/* completeion date and mark */}
+                              <div className='flex gap-2'>
+                                <div className='flex flex-col w-1/2'>
+                                <label htmlFor="completed" className='text-gray-500 font-semibold ml-2'>Date of Completion</label>
+                                  <Field type="date" placeholder='Completed On' name="completed" 
+                                    className={`flex ${errors.completed && touched.completed? 'border-red-500':''} items-center w-full mb-5 px-4 py-3  text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                  />
+                                  <ErrorMessage name='completed' component='div' className='text-red-500 text-sm mb-2' />
+
+                                </div>
+                                <div className='flex flex-col w-1/2'>
+                                <label htmlFor="mark" className='text-gray-500 font-semibold ml-2'>Mark in CGPA</label>
+                                  <Field type="text" placeholder='Type here' name="mark" 
+                                    className={`flex ${errors.mark && touched.mark? 'border-red-500':''} items-center w-full mb-5 px-4 py-3  text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                  />
+                                  <ErrorMessage name='mark' component='div' className='text-red-500 text-sm mb-2' />
+
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {step === 3 && (
+                            <>
+                            {/* other details */}
+                              <div className='skills mx-20 w-4/5 '>
+                                {/* skills */}
+                                <div className='flex'>
+                                  <div className='flex flex-col w-full'>
+                                    <label htmlFor="skills" className='text-gray-500 font-semibold ml-2'>Add Skills</label>
+                                    <div className='flex '>
+                                        <input type="text" placeholder='Type here' name="skills"
+                                        value={skill}
+                                        className="flex items-center w-full mb-5 mx-2 px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
+                                        onChange={handleSkill}
+                                      />
+                                      <div onClick={handleAddSkill} className="h-7 cursor-pointer bg-blue-700 hover:bg-blue-400 text-white font-semibold px-2 rounded">
+                                        Add
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className='mx-5 skills-list mb-5 flex flex-wrap'>
+                                  {skills.map((skill, index) => (
+                                    <div key={index} className='mr-2 mb-2 px-2 pb-1 skill-item bg-green-200 rounded-md flex'>
+                                      <span className="text-sm font-medium text-gray-600">{skill}</span>
+                                      <span className='mt-1 ml-1 cursor-pointer' onClick={() => handleRemoveSkill(index)}><CiCircleRemove /></span>
+                                    </div>
+                                  ))}
+                                </div>
+                                {/* Linkedin link */}
+                                <div className='flex'>
+                                  <div className='flex flex-col w-full'>
+                                    <label htmlFor="linkedin" className='text-gray-500 font-semibold ml-2'>LinkedIn link</label>
+                                    <Field type="text" placeholder='Type here' name="linkedin" 
+                                      className={`flex ${errors.linkedin && touched.linkedin? 'border-red-500':''} items-center w-full mb-5  px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                    />
+                                  <ErrorMessage name='linkedin' component='div' className='text-red-500 text-sm mb-2' />
+
+                                  </div>
+                                </div>
+                                {/* github link */}
+                                <div className='flex'>
+                                  <div className='flex flex-col w-full'>
+                                    <label htmlFor="github" className='text-gray-500 font-semibold ml-2'>Github link</label>
+                                    <Field type="text" placeholder='Type here' name="github" 
+                                      className={`flex ${errors.github && touched.github? 'border-red-500':''} items-center w-full mb-5  px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                    />     
+                                  <ErrorMessage name='github' component='div' className='text-red-500 text-sm mb-2' />
+
+                                  </div>
+                                </div>
+                                {/* Resume image */}
+                                <div className='flex'>
+                                  <div className='flex flex-col w-full'>
+                                    <label htmlFor="resume" className='text-gray-500 font-semibold ml-2'>Resume</label>
+                                      <input type="file" name="resume" onChange={(e)=>handleResumeChange(e)}
+                                        className={`flex  items-center w-full mb-5 px-3 py-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
+                                      />
+                                    {/* <ErrorMessage name='resume' component='div' className='text-red-500 text-sm mb-2' /> */}
+
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                          <div className='flex justify-end mr-12'>
+                            {step > 1 && (
+                              <div onClick={stepDown} className="cursor-pointer bg-blue-300 hover:bg-blue-400 text-gray-800 font-semibold px-2 rounded mr-2">
+                                Prev
+                              </div>
+                            )}
+                            {step < 3 && (
+                              <div onClick={stepUp} className="cursor-pointer bg-blue-300 hover:bg-blue-400 text-gray-800 font-semibold px-2 rounded">
+                                Next
+                              </div>
+                            )}
+                            {step === 3 && (
+                              <button type='submit' disabled={isSubmitting} className="bg-blue-500 hover:bg-blue-400 text-white font-semibold px-2 rounded">
+                                Submit
+                              </button>
+                            )}
                           </div>
-                          <div className='flex'>
-                            <input type="text" placeholder='LinkedIn link' name="linkedin" onChange={handleChange} value={data.linkedin}
-                              className="flex items-center w-full mb-5 mx-2 px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                            />
-                          </div>
-                          <div className='flex'>
-                            <input type="text" placeholder='Github link' name="github" onChange={handleChange} value={data.github}
-                              className="flex items-center w-full mb-5 mx-2 px-4 py-3 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                            />
-                          </div>
-                          <div className='px-2'>
-                            <label htmlFor="resume" className='text-gray-500 ml-2'>Resume</label>
-                            <input type="file" name="resume" onChange={handleResumeChange}
-                              className="flex items-center w-full mb-5 px-3 py-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl"
-                            />
-                          </div>
-                        </div>
-                      </>
+                      </Form>
                     )}
-                    <div className='flex justify-end mr-12'>
-                      {step > 1 && (
-                        <div onClick={stepDown} className="cursor-pointer bg-blue-300 hover:bg-blue-400 text-gray-800 font-semibold px-2 rounded mr-2">
-                          Prev
-                        </div>
-                      )}
-                      {step < 3 && (
-                        <div onClick={stepUp} className="cursor-pointer bg-blue-300 hover:bg-blue-400 text-gray-800 font-semibold px-2 rounded">
-                          Next
-                        </div>
-                      )}
-                      {step === 3 && (
-                        <button type='submit' className="bg-blue-500 hover:bg-blue-400 text-white font-semibold px-2 rounded">
-                          Submit
-                        </button>
-                      )}
-                    </div>
-                  </form>
+                  </Formik>
                 </div>
               </div>
             </div>

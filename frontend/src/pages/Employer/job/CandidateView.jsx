@@ -23,6 +23,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
     const employer_id = selectedJob.employer_id
     const emp_name = selectedJob.employer_name
 
+    console.log()
     
     useEffect(()=>{
         const val = value.filter((e)=>appStatus == e)
@@ -81,6 +82,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
             console.log(responce)
             if(responce.status == 200){
                 setAppStatus('Interview Cancelled')
+                changeStatus('Interview Cancelled')
                 Swal.fire({
                     title: "Cancelled!",
                     text: "Application Cancelled.",

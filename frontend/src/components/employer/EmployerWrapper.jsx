@@ -49,7 +49,9 @@ function EmployerWrapper() {
             )
             dispatch(
               set_user_basic_details({
-                profile_pic : responce.data.user_data.profile_pic
+                profile_pic : responce.data.user_data.profile_pic,
+                user_type_id : responce.data.user_data.id,
+                
               })
             )
             
@@ -60,7 +62,7 @@ function EmployerWrapper() {
       }
     }
     else{
-      navigate('/employer/')
+      navigate('/login')
     }
   };
 
@@ -78,12 +80,12 @@ console.log("inside employer wrapper.................",authentication_user)
     <div>
       <EmployerHeader/>
       <Routes>
-        <Route path='/' element={<EmpLogin/>}> </Route>
-        <Route path='/signup' element={<EmpSignup/>}></Route>
-        <Route path='/forgot' element={<ForgetPassword/>}></Route>
+        {/* <Route path='/' element={<EmpLogin/>}> </Route>
+        <Route path='/signup' element={<EmpSignup/>}></Route> */}
+        {/* <Route path='/forgot' element={<ForgetPassword/>}></Route> */}
         <Route path='/otp' element={<Otp/>} ></Route>
         <Route path='/profile_creation' element={<EmpProfileCreation/>} ></Route>
-        <Route path='/home' element={<EmpHome/>}></Route>
+        <Route path='/' element={<EmpHome/>}></Route>
         <Route path='/postjob' element={<PostJob/>}></Route>
         <Route path='/jobdetail/:jobId' element={<JobDetail/>} ></Route>
         <Route path='/applications' element={<Applications/>}></Route>

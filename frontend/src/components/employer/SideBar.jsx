@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { MdOutlineAddTask } from "react-icons/md";
 import {Link} from 'react-router-dom'
 import { HiHome } from "react-icons/hi2";
@@ -8,9 +8,43 @@ import { IoNotifications } from "react-icons/io5";
 import { FaUserTie } from "react-icons/fa";
 import { PiUserCircleCheckFill } from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { w3cwebsocket as W3CWebSocket, w3cwebsocket } from "websocket";
 
 
 function SideBar() {
+  const baseURL='http://127.0.0.1:8000/'
+  const token = localStorage.getItem('access')
+  const userBasicDetails = useSelector((state)=>state.user_basic_details)
+  const user_id = userBasicDetails.user_type_id
+  console.log("user_id........................",user_id)
+
+  // useEffect(()=>{
+  //     const connectToWebSocket =(user_id) =>{
+  //   if(!user_id) return;
+
+  //   const messageNotificationSocket = new W3CWebSocket(
+  //     `${baseURL}ws/notifications/${user_id}/`
+  //   );
+
+  //   messageNotificationSocket.onopen = () => {
+  //     console.log('Notification socket connected');
+  //   };
+
+  //   messageNotificationSocket.onmessage = function(e) {
+  //     const data = JSON.parse(e.data);
+  //     const unreadCount = data.unread_count;
+  //     console.log("unread message count....................................",unreadCount)
+  //   };
+  //     messageNotificationSocket.onclose = function(e) {
+  //       console.error('Notification socket closed unexpectedly');
+  //   };
+  // };
+
+  // connectToWebSocket(user_id);
+  // },[])
+
   return (
     <div>
         <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar" type="button" className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
@@ -34,7 +68,7 @@ function SideBar() {
                   </Link>
               </li>
               <li>
-                <Link to={'/employer/home/'}>
+                <Link to={'/employer/'}>
                   <p className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                   <HiHome className='text-gray-500' size={25}/>
                     <span className="flex-1 ms-3 whitespace-nowrap">Home</span>

@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import logo from '../../assets/logo.png'
 import default_img from '../../assets/default.png'
 import { MdOutlineMessage } from "react-icons/md";
@@ -12,19 +12,30 @@ import { set_Authentication } from '../../Redux/Authentication/authenticationSli
 import { useSelector, useDispatch } from "react-redux";
 import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice';
 import { FaUserTie } from "react-icons/fa";
+import NotificationModal from './utilities/NotificationModal';
+import axios from 'axios';
 
 function CandidateHeader() {
   const authentication_user = useSelector((state)=> state.authentication_user);
   const userBasicDetails = useSelector((state)=>state.user_basic_details);
   const baseURL='http://127.0.0.1:8000'
+  const token = localStorage.getItem('access'); 
   const navigate=useNavigate();
   const dispatch=useDispatch();
   const profile_image=`${baseURL}${userBasicDetails.profile_pic}`
-  
-  console.log("inside user header...............",authentication_user)
-  console.log("inside user header.....................",userBasicDetails)
+  const user_id = userBasicDetails.user_type_id
+  const [modal,setModal] = useState(false)
+  const [notifications, setNotifications] = useState([]);
+  const [userid,setUserid] = useState(null)
+  const [unreadCount, setUnreadCount] = useState(0);
+  useEffect(()=>{
+      console.log("inside header image",profile_image)
+  },[userBasicDetails.profile_pic])
+  // console.log("inside user header...............",authentication_user)
+  // console.log("inside user header..........userbasic details...........",userBasicDetails)
   const handleLogout = ()=>{
     localStorage.clear();
+    setNotifications([])
     dispatch(
       set_Authentication({
         name: null,
@@ -39,10 +50,11 @@ function CandidateHeader() {
         name: null,
         email:null,
         phone:null,
-        profile_pic:null
+        profile_pic:null,
+        user_type_id:null
       })
     );
-    navigate('/candidate/')
+    navigate('/login')
   }
   const items = [
     {
@@ -58,9 +70,61 @@ function CandidateHeader() {
       key: '1',
     },
   ];
+  
+  
+  useEffect(() => {
+    const get_user_id = async () => {
+        try {
+            const response = await axios.get(`${baseURL}/api/account/current_user/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log("current user response:", response);
+            if (response.status === 200) {
+                setUserid(response.data.id);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    get_user_id();
+}, []);
 
+useEffect(() => {
+    if (userid !== null) {
+        const ws = new WebSocket(`${baseURL}/ws/notifications/${userid}/`);
+
+        ws.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          setNotifications((prevNotifications) => {
+              const newNotifications = [...prevNotifications, data];
+              const unreadCount = newNotifications.filter(n => !n.is_read).length;
+              setUnreadCount(unreadCount);
+              return newNotifications;
+          });
+      };
+
+        ws.onclose = () => {
+            console.log('WebSocket closed');
+        };
+
+        return () => {
+            ws.close();
+        };
+    }
+}, [userid]);
+
+
+
+
+console.log("notifications.......................................",notifications)
+console.log("notification count.......................",unreadCount)
   return (
     <div className='w-full flex justify-between h-12 bg-blue-200 fixed top-0 z-50' >
+      {modal && <NotificationModal setUnreadCount={setUnreadCount} notifications={notifications} setModal={setModal} userid={userid} />}
         <Link to={'/'}>
         <div className='ml-3  flex cursor-pointer'>
             <div className='mt-2'>
@@ -72,7 +136,7 @@ function CandidateHeader() {
         </div>
         </Link>
         <div className='flex items-center'>
-            <Link to={'/candidate/home/'}><span className='text-base font-semibold text-bg-800 cursor-pointer'>Home</span></Link>
+            <Link to={'/candidate'}><span className='text-base font-semibold text-bg-800 cursor-pointer'>Home</span></Link>
         </div>
         <div className='flex'>
             <div className='pt-1 mx-2'>
@@ -107,7 +171,10 @@ function CandidateHeader() {
                     <p className='text-xs font-medium text-gray-500'>Applyed Jobs</p>
                 </div>
                 </Link>
-                <div className='flex flex-col justify-center items-center'>
+                <div className='flex flex-col justify-center items-center cursor-pointer relative' onClick={()=>setModal(true)}>
+                  {unreadCount >0 &&
+                    <div className='bg-red-500 text-white text-xs rounded-full px-1 absolute right-2'>{unreadCount}</div>
+                  }
                     <IoNotifications className='w-5 h-5'/>
                     <p className='text-xs font-medium text-gray-500'>Notification</p>
                 </div>

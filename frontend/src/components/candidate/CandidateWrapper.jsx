@@ -43,7 +43,7 @@ function CandidateWrapper() {
               'Content-Type': 'application/json'
             }
           })
-          console.log("inside userwrapper data.........from backend",responce)
+          // console.log("inside userwrapper data.........from backend",responce)
           if(responce.status == 200){
             dispatch(
               set_Authentication({
@@ -65,7 +65,7 @@ function CandidateWrapper() {
       }
     }
     else{
-      navigate('/candidate/')
+      navigate('/login')
     }
   };
 
@@ -79,18 +79,18 @@ function CandidateWrapper() {
     }
   
   }, [authentication_user])
-console.log("inside candidate wrapper.................",authentication_user)
+// console.log("inside candidate wrapper.................",authentication_user)
 
   return (
     <div>
       <CandidateHeader/>
         <Routes>
-          <Route path='/' element={<CandidateLogin/>}> </Route>
-          <Route path='/signup' element={<CandidateSignin/>}></Route>
-          <Route path='/forgot' element={<ForgetPassword/>}></Route>
-          <Route path='/otp' element={<Otp/>}></Route>
+          {/* <Route path='/' element={<CandidateLogin/>}> </Route>
+          <Route path='/signup' element={<CandidateSignin/>}></Route> */}
+          {/* <Route path='/forgot' element={<ForgetPassword/>}></Route> */}
+          {/* <Route path='/otp' element={<Otp/>}></Route> */}
+          <Route path='/' element={<CandidateHome/>}></Route>
           <Route path='/create_profile' element={<ProfileCreation/>}></Route>
-          <Route path='/home' element={<CandidateHome/>}></Route>
           <Route path='/jobdetails/:jobId/' element={<JobDetail/>}></Route>
           <Route path='/applyedjobs' element={<ApplyedJob/>} ></Route>
           <Route path='/profile' element={<Profile/>}></Route>

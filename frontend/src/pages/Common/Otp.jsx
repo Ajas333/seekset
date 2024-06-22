@@ -5,6 +5,7 @@
     import otp_img from '../../assets/otp.svg'
     import axios from 'axios'
     import Swal from 'sweetalert2'
+    
 
 
     function Otp() {
@@ -17,7 +18,7 @@
         const baseURL = 'http://127.0.0.1:8000/';
         const [resend, setResend] = useState(false);
         const email= localStorage.getItem('email')
-
+       
         const [minute, setMinute] = useState(1);
       
         const [second, setSecond] = useState(1);
@@ -52,10 +53,10 @@
             if(response.status == 200){
               localStorage.removeItem('email');
               if(response.data.usertype ==="candidate"){
-                 navigate(`/candidate/`)
+                 navigate(`/login`)
               }
               else if(response.data.usertype === "employer"){
-                navigate('/employer/')
+                navigate('/login')
               }
             }
           } catch (error) {

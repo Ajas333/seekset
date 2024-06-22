@@ -7,15 +7,36 @@ import LandingPage from './pages/LandingPage'
 import useStore from './Redux/useStore'
 import { Provider } from 'react-redux'
 import ResetPassword from './pages/Common/ResetPassword'
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import LoginSignup from './pages/Common/LoginSignup'
+import ForgetPassword from './pages/Common/ForgetPassword'
+import Otp from './pages/Common/Otp'
+import 'react-image-crop/dist/ReactCrop.css'
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
       <Provider store={useStore}>
+      <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition: Bounce
+          />
         <Routes>
           <Route path='/' element={<LandingPage/>}></Route>
-
+          <Route path='/login' element={<LoginSignup/>}></Route>
+          <Route path='/forgot' element={<ForgetPassword/>}></Route>
+          <Route path='/otp' element={<Otp/>}></Route>
           <Route path='employer/*' element={<EmployerWrapper/>}></Route>
           <Route path='/reset_password/:id' element={<ResetPassword/>} ></Route>
           <Route path='candidate/*' element={<CandidateWrapper/>}></Route>

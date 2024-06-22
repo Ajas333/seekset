@@ -65,7 +65,7 @@ class CandidateProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Candidate
-        fields = ['phone', 'dob', 'Gender', 'profile_pic', 'skills', 'resume', 'linkedin', 'github']
+        fields = ['phone','place', 'dob', 'Gender', 'profile_pic', 'skills', 'resume', 'linkedin', 'github']
 
     def update(self, instance, validated_data):
     

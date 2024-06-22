@@ -104,8 +104,8 @@ function JobDetail() {
     }
 
     const handleApply = async ()=>{
-      try{
-       
+      try{  
+        console.log("hehehehehhehehehehheehhehhehehhehehheh")
         const responce = await axios.post(`${baseURL}api/empjob/applyjob/${jobId}/`,answers,{
           headers:{
             'Authorization': `Bearer ${token}`,

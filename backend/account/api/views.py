@@ -10,12 +10,38 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
 
-
+class CurrentUser(APIView):
+    # permission_classes=[]
+    def get(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({"error": "User is not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            candidate = Candidate.objects.get(user=user)
+            serializer = CandidateSerializer(candidate)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Candidate.DoesNotExist:
+            pass
+        
+        try:
+            employer = Employer.objects.get(user=user)
+            serializer = EmployerSerializer(employer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Employer.DoesNotExist:
+            pass
+        
+        return Response({"error": "User is not a candidate or an employer"}, status=status.HTTP_404_NOT_FOUND)
+    
 class CandidateRegisterView(APIView):
     permission_classes = []
     def post(self,request):
         print("hellooooo")
         print(request.data)
+        email = request.data.get('email')
+        if User.objects.filter(email=email).exists():
+            return Response({"message":"User with this email is already exist"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        
         serializer=CandidateRegisterSerializer(data=request.data)
         if serializer.is_valid():
             print(serializer)
@@ -41,6 +67,9 @@ class EmployerRegisterView(APIView):
     permission_classes = []
     def post(self,request):
         print("hellooooooooo")
+        email = request.data.get('email')
+        if User.objects.filter(email=email).exists():
+            return Response({"message":"User with this email is already exist"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
         serializer=EmployerRegisterSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -148,6 +177,7 @@ class ResetPassword(APIView):
     def post(self,request):
         password=request.data.get('password')
         id=request.data.get('id')
+        print(password,id)
         user=User.objects.get(pk=id)
         try:
             if user:
@@ -164,44 +194,88 @@ class ResetPassword(APIView):
         else:
             return Response({"message": "Error"}, status=status.HTTP_400_BAD_REQUEST)
             
-class LoginView(APIView):
+class EmpLoginView(APIView):
     permission_classes = []
     def post(self, request):
-        try:
-            email = request.data.get('email')
-            password = request.data.get('password')
-            print(email,password)
-            if not email or not password:
-                raise ParseError("Both email and password are required.")
-        except KeyError:
-            raise ParseError("Both email and password are required.")
         
+        email = request.data.get('email')
+        password = request.data.get('password')
+        print(email,password)
+    
         try:
             user = User.objects.get(email=email)
+            print(user)
         except User.DoesNotExist:
-            return Response({"message": "Invalid email address."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Invalid email address!"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
         
         if not user.is_active:
-            return Response({"message": "Your account is inactive."}, status=status.HTTP_403_FORBIDDEN)
-        
+            return Response({"message": "Your account is inactive!"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+        if not user.user_type == 'employer':
+            return Response({"message": "Only employer can login!"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
         user = authenticate(username=email, password=password)
-        if user.user_type == 'candidate':
-            candidate=Candidate.objects.get(user=user)
-            candidate=CandidateSerializer(candidate).data
-            user_data = candidate
-        elif user.user_type == 'employer':
+        if user is None:
+            return Response({"message": "Incorrect Password!"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+       
+        try:
             employer=Employer.objects.get(user=user)
             employer=EmployerSerializer(employer).data
             user_data=employer
-        print(user)
+        except Employer.DoesNotExist:
+            return Response({"message": "something went Wrong"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION) 
+        refresh = RefreshToken.for_user(user)
+        refresh["name"]=str(user.full_name)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+        content = {
+            'email': user.email,
+            'name':user.full_name,
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'isAdmin': user.is_superuser,
+            'user_type':user.user_type,
+            'user_data':user_data
+        }
+        return Response(content, status=status.HTTP_200_OK)
+    
+class CandidateLoginView(APIView):
+    permission_classes = []
+    def post(self, request):
+        
+        email = request.data.get('email')
+        password = request.data.get('password')
+        print(email,password)
+    
+        try:
+            user = User.objects.get(email=email)
+            print(user)
+        except User.DoesNotExist:
+            return Response({"message": "Invalid email address!"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        
+        if not user.is_active:
+            return Response({"message": "Your account is inactive!"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+        if not user.user_type == 'candidate':
+            return Response({"message": "Only candidates can login!"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+        user = authenticate(username=email, password=password)
         if user is None:
-            return Response({"message": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Incorrect Password!"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+       
+        try:
+            candidate=Candidate.objects.get(user=user)
+            candidate=CandidateSerializer(candidate).data
+            user_data = candidate
+        except Candidate.DoesNotExist:
+            return Response({"message": "something went Wrong"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION) 
         
         refresh = RefreshToken.for_user(user)
         refresh["name"]=str(user.full_name)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
-
         content = {
             'email': user.email,
             'name':user.full_name,
@@ -321,4 +395,64 @@ class EmployerProfileCreatView(APIView):
         else:
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+class UserEditView(APIView):
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        print(request.data)
+        userId = request.data.get("userId")
+        action = request.data.get("action")
+        try:
+            user = User.objects.get(pk=userId)
+            candidate = Candidate.objects.get(user=user)
+        except:
+            pass
+       
+        print(action)
+        try:
+            if action == "personal":
+                user.full_name = request.data.get("full_name")
+                user.email = request.data.get("email")
+                serializer=CandidateProfileSerializer(candidate, data=request.data, partial=True)
+                
+                if serializer.is_valid():
+                    serializer.save()
+                user.save()
+                candidate.save()
+                return Response({"message":"personal data changed"},status=status.HTTP_200_OK)
+            if action == "education":
+                Education.objects.create(
+                    user = user,
+                    education = request.data.get("education"),
+                    college = request.data.get("college"),
+                    specilization = request.data.get("specilization"),
+                    completed = request.data.get("completed"),
+                    mark = request.data.get("mark")
+                )
+                return Response({"message":"Education data changed"},status=status.HTTP_200_OK)
+            if action == "educationDelete":
+                print("hekklooooooooooooooooooo")
+                eduId=request.data.get("eduId")
+                print(eduId)
+                education=Education.objects.get(id=eduId)
+                print("education........",education)
+                education.delete()
+                return Response({"message":"Education data deleted"},status=status.HTTP_200_OK)
+            if action == "skills":
+                candidate.skills = request.data.get("skills")
+                candidate.save()
+                return Response({"message":"Skills data Changed"},status=status.HTTP_200_OK)
+            if action == "otherinfo":
+                serializer = CandidateProfileSerializer(candidate, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"message":"OtherInfo data Changed"},status=status.HTTP_200_OK)
+            if action == "profilepic":
+                serializer = CandidateProfileSerializer(candidate, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"message":"Profile Image Updated"},status=status.HTTP_200_OK)
+        except:
+            return Response({"message":"something went wrong"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+        return Response(status=status.HTTP_200_OK)

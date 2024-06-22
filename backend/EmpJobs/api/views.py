@@ -3,8 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializer import *
 from account.models import *
+from chat.models import *
 from rest_framework.permissions import IsAuthenticated
-
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 class PostJob(APIView):
@@ -167,6 +169,8 @@ class Applyjob(APIView):
                         Answer.objects.create(candidate=candidate,question=question,answer_text=answer)
                     except Question.DoesNotExist:
                         return Response({"message": f"Question with id {q_id} not found"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                print("no answers")
             return Response({"message": "Job applied successfully"}, status=status.HTTP_201_CREATED)
 
         except Jobs.DoesNotExist:
@@ -202,19 +206,7 @@ class GetApplicationjob(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
         
-# class JobStatus(APIView):
-#     permission_classes=[IsAuthenticated]
-#     def post(self,request,id):
-       
-#         try:
-#             appyedjob=ApplyedJobs.objects.get(id=id)
-#             appyedjob.status = "Accepted"
-#             appyedjob.save()
-#             print(appyedjob)
-#             return Response(status=status.HTTP_200_OK)
-#         except Exception as e:
-#             print(e)
-#             return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
         
 class ProfileView(APIView):
     permission_classes =[IsAuthenticated]
@@ -253,6 +245,22 @@ class ApplicationStatusView(APIView):
             if applyedjob:
                 applyedjob.status = action
                 applyedjob.save()
+
+                message = f'The status of your application for job {job_id} has been changed to {action}.'
+                CandidateNotification.objects.create(
+                    user=applyedjob.candidate,
+                    message=message
+                )
+
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    f'notifications_{applyedjob.candidate.id}',  
+                    {
+                        'type': 'send_notification',
+                        'message': f'The status of your application for job {job_id} has been changed to {action}.'
+                    }
+                )
+
                 return Response({"message":"Status changed"},status=status.HTTP_200_OK)
             else:
                 return Response({"message":"no job available"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)

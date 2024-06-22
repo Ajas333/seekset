@@ -22,7 +22,7 @@ function LandingPage() {
               <span className="text-xl font-bold text-blue-900">seekset</span>
             </div>
             <div className="space-x-5 ">
-            <Link to={'/employer/'}>
+            {/* <Link to={'/employer/'}>
               <button className="px-3 py-2 rounded-full bg-blue-400 text-white font-bold hover:bg-blue-600 hover:shadow-lg hover:scale-110 active:bg-blue-800 active:scale-95 transition duration-500">
                 Employer Login
               </button>
@@ -30,6 +30,11 @@ function LandingPage() {
               <Link to={'/candidate/'}>
               <button className="px-3 py-2 rounded-full bg-blue-400 text-white font-bold hover:bg-blue-600 hover:shadow-lg hover:scale-110 active:bg-blue-800 active:scale-95 transition duration-500">
                 Candidate Login
+              </button>
+              </Link> */}
+              <Link to={'/login'}>
+              <button class="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce">
+                Login
               </button>
               </Link>
             </div>

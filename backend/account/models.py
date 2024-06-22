@@ -86,7 +86,7 @@ class Education(models.Model):
     college=models.CharField(blank=True,null=True)
     specilization=models.CharField(blank=True,null=True)
     completed=models.DateField(blank=True,null=True)
-    mark=models.IntegerField(blank=True,null=True)
+    mark=models.FloatField(blank=True,null=True)
 
 
 class Employer(models.Model):

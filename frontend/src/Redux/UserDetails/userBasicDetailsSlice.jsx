@@ -8,7 +8,8 @@ export const userBasicDetailsSlice = createSlice(
       name: null,
       email:null,
       phone:null,
-      profile_pic:null
+      profile_pic:null,
+      user_type_id:null
     },
     reducers: {
       set_user_basic_details: (state, action) => {
@@ -16,6 +17,7 @@ export const userBasicDetailsSlice = createSlice(
         state.email=action.payload.email;
         state.phone=action.payload.phone;
         state.profile_pic = action.payload.profile_pic;
+        state.user_type_id=action.payload.user_type_id
       }
     }
 

@@ -3,6 +3,11 @@ import f_pass from '../../assets/forgot_pass.svg'
 import { useParams,useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2'
+import { Formik,Field,Form,ErrorMessage } from 'formik';
+import { ResetPasswordSchema,initialValues } from '../../validation/ResetPassValidation';
+import { toast } from 'react-toastify';
+
+
 
 function ResetPassword() {
     const { id } = useParams();
@@ -22,30 +27,60 @@ function ResetPassword() {
         }
       }, [password, confpassword]);
 
-    const handleSubmit = async(e)=>{
-        e.preventDefault()
-        if(formError){
-            setFormError('re-type the password')
-        }
+    const handleSubmit = async(values,{setsubmitting})=>{
+        const formData = new FormData();
+        formData.append('password',values.password)
+        formData.append('id',id)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         try{
-            const response = await axios.post(baseURL+'api/account/reset_password/', { password, id});
-        console.log(response)
+            const response = await axios.post(baseURL+'api/account/reset_password/', formData);
+            console.log(response)
         if(response.status ==200){
             setFormError('')
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "password reset successfull ",
-                showConfirmButton: false,
-                timer: 1500
-              });
-              if(response.data.usertype ==='candidate'){
-                navigate('/candidate/');
-              }
-              else{
-                navigate('/employer/');
-              }
+            toast.success('Login successful!',{
+              position: "top-center",
+            });
+              
+           navigate('/login');
+        
+              
         }   
         else{
             setFormError('something went wrong pleas try again later')
@@ -53,6 +88,8 @@ function ResetPassword() {
         }
         catch(error){
             setFormError(error)
+        }finally{
+          setsubmitting(false)
         }
 
     }
@@ -74,41 +111,55 @@ function ResetPassword() {
                   <div className='flex h-full'>  
                       <div className="flex items-center justify-center w-full ">
                         <div className="flex items-center ">
-                          
-                        <form onSubmit={handleSubmit} className="flex flex-col w-full h-full pb-6 text-center" method='POST'>
-                            {/* <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Sign In</h3>*/}
-                            <p className="mb-4 text-grey-700">Reset Your password</p>
-                            
-                            <div className="flex items-center mb-3">
-                              <hr className="h-0 border-b border-solid border-grey-500 grow" /> 
-                            </div>
-                            <input
-                              id="password"
-                              type="password"
-                              placeholder="new Password"
-                              onChange={(e) => setPassword(e.target.value)}
-                              className="flex items-center w-full px-4 py-3 mr-2  text-sm font-medium outline-none focus:bg-grey-400 mb-3 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
-                              /> 
-                            
-                            <input
-                              id="conform_password"
-                              type="password"
-                              placeholder="conform new Password"
-                              onChange={(e)=>setConfpassword(e.target.value)}
-                              className="flex items-center w-full px-4 py-3 mr-2  text-sm font-medium outline-none focus:bg-grey-400 mb-3 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
-                            /> 
-                             {formError ?
-                                  <div className='flex justify-start mb-5  pl-3 text-red-600 '>
+                          <Formik 
+                            initialValues={initialValues}
+                            validationSchema={ResetPasswordSchema}
+                            onSubmit={handleSubmit}
+                          >
+                            {({errors,touched,isSubmitting})=>(
+                              <Form  className="flex flex-col w-full h-full pb-6 text-center" method='POST'>
+                                {/* <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Sign In</h3>*/}
+                                <p className="mb-4 text-grey-700">Reset Your password</p>
+                                
+                                <div className="flex items-center mb-3">
+                                  <hr className="h-0 border-b border-solid border-grey-500 grow" /> 
+                                </div>
+                                <Field
+                                  id="password"
+                                  name ="password"
+                                  type="password"
+                                  placeholder="new Password"
+                                  className={`flex items-center w-full px-4 py-3 ${errors.password && touched.password ? 'border-red-500' : 'mb-5'} mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl`}
 
-                                    <p >{formError}</p>
-                                  </div>
-                              : ""
-                            }
-                            <button type='submit' className="w-full px-4 py-3 mb-3 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500">
-                              Send Otp
-                            </button>
-                            
-                          </form>
+                                  /> 
+                                 <ErrorMessage name='password' component='div' className='text-red-500 text-sm mb-2' />
+                                
+                                <Field
+                                  id="confirm_password"
+                                  name = "confirm_password"
+                                  type="password"
+                                  placeholder="conform new Password"
+                                  className={`flex items-center w-full px-4 py-3 mr-2 text-sm font-medium ${errors.confirm_password && touched.confirm_password ? 'border-red-500' : 'mb-5'} outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl`}
+
+                                /> 
+                                <ErrorMessage name='confirm_password' component='div' className='text-red-500 text-sm mb-2' />
+
+                                {formError ?
+                                      <div className='flex justify-start mb-5  pl-3 text-red-600 '>
+
+                                        <p >{formError}</p>
+                                      </div>
+                                  : ""
+                                }
+                                <button type='submit'
+                                    disabled={isSubmitting}
+                                    className="w-full px-4 py-3 mb-3 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500">
+                                  Submit
+                                </button>
+                                
+                              </Form>
+                            )}
+                          </Formik>
                         </div>
                       </div>
                   </div>

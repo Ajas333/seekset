@@ -10,10 +10,12 @@ function ChatModal({candidate_name,profile_pic,userName,setChat,candidate_id,emp
       const [client, setClient] = useState(null); 
       const [message, setMessage] = useState("");
       const chatMessagesRef = useRef(null);
+      const user_id = candidate_id
 
       const closeModal =(e)=>{
         if(modalRef.current === e.target){
           setChat();
+          client.close();
           }
         }
 
@@ -23,7 +25,7 @@ function ChatModal({candidate_name,profile_pic,userName,setChat,candidate_id,emp
               if(!candidate_id || !employer_id) return ;
               
               const newClint = new W3CWebSocket(
-                  `${baseURL}ws/chat/${candidate_id}/${employer_id}/`
+                  `${baseURL}ws/chat/${candidate_id}/${employer_id}/${user_id}`
               );
               setClient(newClint);
               newClint.onopen = () => {

@@ -12,10 +12,11 @@
       const [client, setClient] = useState(null); 
       const [message, setMessage] = useState("");
       const chatMessagesRef = useRef(null);
-
+      const user_id = employer_id
       const closeModal =(e)=>{
         if(modalRef.current === e.target){
           setChat();
+          client.close();
           }
         }
        
@@ -25,7 +26,7 @@
             if(!candidate_id || !employer_id) return ;
             
             const newClint = new W3CWebSocket(
-                `${baseURL}ws/chat/${candidate_id}/${employer_id}/`
+                `${baseURL}ws/chat/${candidate_id}/${employer_id}/${user_id}`
             );
             setClient(newClint);
             newClint.onopen = () => {
@@ -48,19 +49,19 @@
         },[candidate_id,employer_id])
 
 
-        const sendMessage = () =>{
-          if (!client || client.readyState !== client.OPEN) {
-              console.error("WebSocket is not open");
-              return;
-            }
-            const sendername = emp_name
-            console.log("SENDER NAME:", sendername);
-            const messageData = { message, sendername };
-            const messageString = JSON.stringify(messageData);
-            console.log("Sending Message:", messageString);
-            client.send(messageString);
-            setMessage("");
-        }
+          const sendMessage = () =>{
+            if (!client || client.readyState !== client.OPEN) {
+                console.error("WebSocket is not open");
+                return;
+              }
+              const sendername = emp_name
+              console.log("SENDER NAME:", sendername);
+              const messageData = { message, sendername };
+              const messageString = JSON.stringify(messageData);
+              console.log("Sending Message:", messageString);
+              client.send(messageString);
+              setMessage("");
+          }
 
         useEffect(() => {
           const scrollToBottom = () => {
