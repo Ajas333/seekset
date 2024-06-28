@@ -18,6 +18,8 @@ import Applications from '../../pages/Employer/job/Applications'
 import CandidateView from '../../pages/Employer/job/CandidateView'
 import Chat from '../../pages/Employer/Message/Chat'
 import Shedules from '../../pages/Employer/Interview/Shedules'
+import EmpProfile from '../../pages/Employer/profile/EmpProfile'
+import Footer from '../Footer'
 
 function EmployerWrapper() {
   const navigate=useNavigate()
@@ -83,17 +85,20 @@ console.log("inside employer wrapper.................",authentication_user)
         {/* <Route path='/' element={<EmpLogin/>}> </Route>
         <Route path='/signup' element={<EmpSignup/>}></Route> */}
         {/* <Route path='/forgot' element={<ForgetPassword/>}></Route> */}
+        <Route path='/' element={<EmpHome/>}></Route>
         <Route path='/otp' element={<Otp/>} ></Route>
         <Route path='/profile_creation' element={<EmpProfileCreation/>} ></Route>
-        <Route path='/' element={<EmpHome/>}></Route>
+        <Route path='/profile' element={<EmpProfile/>}></Route>
         <Route path='/postjob' element={<PostJob/>}></Route>
         <Route path='/jobdetail/:jobId' element={<JobDetail/>} ></Route>
         <Route path='/applications' element={<Applications/>}></Route>
         <Route path='/candidateView' element={<CandidateView/>}></Route>
         <Route path='/chat' element={<Chat/>}></Route>
         <Route path='/shedules' element={<Shedules/>}></Route>
+        {/* <Route path='/interview' element={<InterviewRoom/>}></Route> */}
 
       </Routes>
+      <Footer/>
       
     </div>
   )

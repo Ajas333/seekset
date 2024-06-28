@@ -38,15 +38,17 @@ function EmpHome() {
    fetchJobDetails();
   }, [])
   return (
-    <div className='pt-14 '>
+    <div className='pt-14 flex'>
+      <div>
       <SideBar/>
-      <div className="p-4 sm:ml-64">
+      </div>
+      <div className="p-4 w-full">
         
         <div className=''>
           {jobData.length >0 ?
               jobData.map((job,index)=>(
                   
-                <div key={index} className="group mx-2 mt-10 grid max-w-screen-md grid-cols-12 space-x-8 overflow-hidden rounded-lg border py-8 text-gray-700 shadow transition hover:shadow-lg sm:mx-auto">
+                <div key={index} className="group mx-2 mt-5 grid max-w-screen-md grid-cols-12 space-x-8 overflow-hidden rounded-lg border py-8 text-gray-700 shadow transition hover:shadow-lg sm:mx-auto">
                
                 <div className="col-span-11 flex flex-col pr-8 text-left sm:pl-4">
                  <Link to={`/employer/jobdetail/${job.id}`}> <p className="mb-3 overflow-hidden pr-7 text-lg font-semibold sm:text-xl"> {job.title} </p></Link>

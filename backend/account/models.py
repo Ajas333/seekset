@@ -106,5 +106,11 @@ class Employer(models.Model):
     def __str__(self) -> str:
         return self.user.full_name
 
+class Roles(models.Model):
+    employer = models.ForeignKey(Employer,on_delete=models.CASCADE,related_name="employer_roles")
+    rolename = models.CharField(max_length=50)
+    roleemail = models.EmailField()
+    
+
 
     

@@ -94,11 +94,11 @@ function Chat() {
     }
     console.log("chatt messgwws..........",chatMessages)
   return (
-    <div className=''>
+    <div className='flex'>
     <div>
         <SideBar/>
     </div>
-    <div className='ml-64 '>
+    <div className='w-full '>
   
       <div className=' w-full h-screen pt-12'>
           <div className="grid min-h-full w-full lg:grid-cols-[280px_1fr] ">
@@ -135,22 +135,18 @@ function Chat() {
               </div>
             
             </header>
-            <main className="flex-1 overflow-auto p-2 ">
-              <div className=" flex px-5 w-full flex-col gap-3 ">
+            <main className="flex-1  p-2 ">
+              <div className=" flex px-5 w-full flex-col gap-3 overflow-auto max-h-128">
                 {chatMessages.map((msg,index)=>(
                   <div key={index}>
                   {msg.sendername == empName ? (
                     <div className=' flex w-full justify-end'>
-                        {/* <div className="chat-message bg-white p-2 my-1 rounded-lg max-w-72 shadow">
-                             <strong>{msg.sendername}</strong>: {msg.message}
-                        </div> */}
+                       
                         <Message text={msg.message} send/>
                     </div>
                   ):(
                     <div className=' flex w-full justify-start'>
-                        {/* <div className="chat-message bg-white p-2 my-1 rounded-lg max-w-72 shadow">
-                             <strong>{msg.sendername}</strong>: {msg.message}
-                        </div> */}
+                       
                         <Message text={msg.message} recived/>
                     </div>
                   )}

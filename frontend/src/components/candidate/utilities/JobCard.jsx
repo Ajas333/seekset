@@ -49,7 +49,7 @@ function JobCard(props) {
                         <span className="ml-2 mr-3 rounded-full bg-pink-100 px-2 py-0.5 text-green-900">{props.experiance}</span>
                     </div>
                     <div className="">Salary:
-                        <span className="ml-2 mr-3 rounded-full bg-blue-100 px-2 py-0.5 text-blue-900">{props.lpa} lpa</span>
+                        <span className="ml-2 mr-3 rounded-full bg-blue-100 px-2 py-0.5 text-blue-900">{props.salary} lpa</span>
                     </div>
                     </div>
                 </div>

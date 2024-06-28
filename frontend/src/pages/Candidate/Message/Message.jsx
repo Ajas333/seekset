@@ -32,7 +32,7 @@ function Message() {
     
           if (response.status == 200){
             setChatRooms(response.data)
-            setCandidateName(response.data[0].employer_name)
+            setCandidateName(response.data[0].candidate_name)
             setSelectedChat(response.data[0])
             setChatMessages([])
             connectToWebSocket(response.data[0].candidate,response.data[0].employer,response.data[0].candidate)
@@ -77,7 +77,17 @@ function Message() {
       }
 
   const sendMessage = ()=>{
-
+    if (!client || client.readyState !== client.OPEN) {
+      console.error("WebSocket is not open");
+      return;
+    }
+    const sendername = candidateName
+    console.log("SENDER NAME:", sendername);
+    const messageData = { message, sendername };
+    const messageString = JSON.stringify(messageData);
+    console.log("Sending Message:", messageString);
+    client.send(messageString);
+    setMessage("");
   }
   return (
     <div className=' w-full h-screen pt-12'>
@@ -115,8 +125,8 @@ function Message() {
         </div>
       
       </header>
-      <main className="flex-1 overflow-auto p-2 ">
-        <div className=" flex px-5 w-full flex-col gap-3 ">
+      <main className="flex-1  p-2 ">
+        <div className=" flex px-5 w-full max-h-128 flex-col gap-3 overflow-auto">
           {chatMessages.map((msg,index)=>(
             <div key={index}>
             {msg.sendername == candidateName ? (

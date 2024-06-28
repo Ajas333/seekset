@@ -30,45 +30,7 @@ function ResetPassword() {
     const handleSubmit = async(values,{setsubmitting})=>{
         const formData = new FormData();
         formData.append('password',values.password)
-        formData.append('id',id)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
+        formData.append('id',id) 
         try{
             const response = await axios.post(baseURL+'api/account/reset_password/', formData);
             console.log(response)

@@ -25,10 +25,14 @@ urlpatterns = [
     path('candidatelogin/',views.CandidateLoginView.as_view(),name="login"),
     path('admin/login/',views.AdminLoginView.as_view(),name="adminlogin"),
 
+    path('auth/employer/',views.AuthEmployerView.as_view(),name="authemployer"),
+    path('auth/candidate/',views.AuthCandidateView.as_view(),name="authcandidate"),
+
     path("user/details/", views.UserDetails.as_view(), name="user-details"),
     path("user/profile_creation/",views.CandidateProfileCreation.as_view(),name='CandidateProfileCreation'),
     path("user/emp_profile_creation/",views.EmployerProfileCreatView.as_view(),name="employerProfileCreation"),
-    path("user/edit/",views.UserEditView.as_view(),name="useredit")
+    path("user/edit/",views.UserEditView.as_view(),name="useredit"),
+    # path("user/Empedit/",views.EmpUserEditView.as_view(),name="empUserEdit")
 
 ]
 

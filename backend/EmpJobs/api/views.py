@@ -4,7 +4,7 @@ from rest_framework import status
 from .serializer import *
 from account.models import *
 from chat.models import *
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
@@ -17,25 +17,40 @@ class PostJob(APIView):
         employer=Employer.objects.get(user=user)
         jobs =Jobs.objects.create(employer=employer)
         data = request.data.dict()
-        questions_data = []
+        # questions_data = []
 
-        for key in list(data.keys()):
-            if key.startswith('questions'):
-                questions_data.append(data.pop(key))
-                
+        # for key in list(data.keys()):
+        #     if key.startswith('questions'):
+        #         questions_data.append(data.pop(key))       
         print(request.data)
         print(data)
-        print(questions_data)
+        # print(questions_data)
         serializer=PostJobSerializer(jobs,data=request.data)
         try:
             if serializer.is_valid():
                 serializer.save()
-                if questions_data:
-                    for data in questions_data:
-                        Question.objects.create(job=jobs,text=data)
+                # if questions_data:
+                #     for data in questions_data:
+                #         Question.objects.create(job=jobs,text=data)
                 return Response({"message": "job posted successfull."}, status=status.HTTP_200_OK)
         except:
             return Response({"message":"some thing went wrong pleas do it again"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        
+class EditJob(APIView):
+    permission_classes=[AllowAny]
+    def post(self,request):
+        print(request.data)
+        jobId = request.data.get("jobId")
+        try:
+            job = Jobs.objects.get(id = jobId)
+        except Jobs.DoesNotExist:
+            return Response({"message":"something went wrong"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        
+        serializer = PostJobSerializer(instance=job, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class GetJob(APIView):
     permission_classes = [IsAuthenticated]
@@ -146,40 +161,58 @@ class SavejobStatus(APIView):
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+# class Applyjob(APIView):
+#     permission_classes=[AllowAny]
+#     def post(self, request, job_id):
+#         user = request.user
+#         answer_data = request.data
+#         print(request.data)
+#         print(answer_data)
+#         try:
+#             job = Jobs.objects.get(id=job_id)
+#             candidate = Candidate.objects.get(user=user)
+
+#             if ApplyedJobs.objects.filter(candidate=candidate, job=job).exists():
+#                 return Response({"message": "You have already applied for this job"}, status=status.HTTP_200_OK)
+
+#             ApplyedJobs.objects.create(candidate=candidate, job=job)
+
+#             if answer_data:
+#                 for q_id , answer in answer_data.items():
+#                     try:
+#                         question = Question.objects.get(id=q_id)
+#                         Answer.objects.create(candidate=candidate,question=question,answer_text=answer)
+#                     except Question.DoesNotExist:
+#                         return Response({"message": f"Question with id {q_id} not found"}, status=status.HTTP_400_BAD_REQUEST)
+#             else:
+#                 print("no answers")
+#             return Response({"message": "Job applied successfully"}, status=status.HTTP_201_CREATED)
+
+#         except Jobs.DoesNotExist:
+#             return Response({"message": "Job not found"}, status=status.HTTP_404_NOT_FOUND)
+#         except Candidate.DoesNotExist:
+#             return Response({"message": "Candidate not found"}, status=status.HTTP_404_NOT_FOUND)
+#         except Exception as e:
+#             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class Applyjob(APIView):
-    permission_classes=[IsAuthenticated]
-    def post(self, request, job_id):
-        user = request.user
-        answer_data = request.data
+    permission_classes=[AllowAny]
+    def post(self,request,job_id):
+        print(job_id)
         print(request.data)
-        print(answer_data)
+        userId = request.data.get('userid')
+        print(userId)
         try:
             job = Jobs.objects.get(id=job_id)
-            candidate = Candidate.objects.get(user=user)
-
-            if ApplyedJobs.objects.filter(candidate=candidate, job=job).exists():
+            candidate = Candidate.objects.get(id=userId)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        if ApplyedJobs.objects.filter(candidate=candidate, job=job).exists():
                 return Response({"message": "You have already applied for this job"}, status=status.HTTP_200_OK)
-
-            ApplyedJobs.objects.create(candidate=candidate, job=job)
-
-            if answer_data:
-                for q_id , answer in answer_data.items():
-                    try:
-                        question = Question.objects.get(id=q_id)
-                        Answer.objects.create(candidate=candidate,question=question,answer_text=answer)
-                    except Question.DoesNotExist:
-                        return Response({"message": f"Question with id {q_id} not found"}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                print("no answers")
-            return Response({"message": "Job applied successfully"}, status=status.HTTP_201_CREATED)
-
-        except Jobs.DoesNotExist:
-            return Response({"message": "Job not found"}, status=status.HTTP_404_NOT_FOUND)
-        except Candidate.DoesNotExist:
-            return Response({"message": "Candidate not found"}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+        ApplyedJobs.objects.create(candidate=candidate, job=job)
+        
+        return Response({"message": "You have Successfully applyed the job"},status=status.HTTP_200_OK)
 class GetApplyedjob(APIView):
     permission_classes=[IsAuthenticated]
     def get(self,request):
@@ -216,10 +249,16 @@ class ProfileView(APIView):
             candidate=Candidate.objects.get(user=user)
             serializer=CandidateSerializer(candidate)
             return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-        except Candidate.DoesNotExist:
-            return Response({"message": "Candidate not found"},  status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({"error": str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except:
+            try:
+                employer = Employer.objects.get(user=user)
+                serializer = EmployerSerializer(employer)
+                return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+            except:
+                return Response({"message": "User not found"},  status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+        
+       
         
 class SavedJobsView(APIView):
     permission_classes=[IsAuthenticated]
@@ -268,3 +307,34 @@ class ApplicationStatusView(APIView):
             return Response ({"error":str(e)},status=status.HTTP_404_NOT_FOUND)
 
 
+class AddRoles(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        # Fetch the employer associated with the request user
+        try:
+            employer = Employer.objects.get(user=request.user)
+        except Employer.DoesNotExist:
+            return Response({"error": "Employer not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        
+        roles_data = request.data.get('roles', [])
+        
+        if not roles_data:
+            return Response({"error": "No roles data provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        print("Received roles data:", roles_data) 
+
+     
+        errors = []
+        for role_data in roles_data:
+            serializer = RoleSerializer(data=role_data)
+            if serializer.is_valid():
+                Roles.objects.create(employer=employer, **serializer.validated_data)
+            else:
+                errors.append(serializer.errors)
+        
+        if errors:
+            print("Validation errors:", errors)  
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"message": "Roles added successfully."}, status=status.HTTP_200_OK)

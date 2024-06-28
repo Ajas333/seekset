@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'EmpJobs',
     'Interview',
     'chat',
+    'dashboard',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -144,6 +146,8 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -220,9 +224,27 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'shoplux333@gmail.com'
 EMAIL_HOST_PASSWORD = 'oihk odqq nibk bgfm'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = 'Celery <shoplux333@gmail.com>'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# celery settings
+
+# CELERY_broker_url = 'redis://127.0.0.1:6379'  
+# accept_content = ['application/json']
+# result_serializer = 'json'
+# task_serializer = 'json'
+# timezone = 'Asia/Kolkata'
+# result_backend = 'django-db'
+# broker_connection_retry_on_startup = True
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+result_backend = 'django-db'
+accept_content = ['application/json']
+result_serializer = 'json'
+task_serializer = 'json'
+timezone = 'Asia/Kolkata'
+CELERY_broker_connection_retry_on_startup = True

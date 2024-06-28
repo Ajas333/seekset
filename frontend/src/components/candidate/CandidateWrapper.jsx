@@ -21,6 +21,7 @@ import Profile from '../../pages/Candidate/Profile/Profile'
 import SavedJobs from '../../pages/Candidate/jobs/SavedJobs'
 import SheduledInterviews from '../../pages/Candidate/Interview/SheduledInterviews'
 import Message from '../../pages/Candidate/Message/Message'
+import Footer from '../Footer'
 
 
 
@@ -97,8 +98,8 @@ function CandidateWrapper() {
           <Route path='/savedjobs' element={<SavedJobs/>}></Route>
           <Route path='/shedules' element={<SheduledInterviews/>}></Route>
           <Route path='/message' element={<Message/>}></Route>
-           
         </Routes>
+      <Footer/>
     </div>
   )
 }

@@ -4,6 +4,10 @@ export default {
   "./src/**/*.{js,ts,jsx,tsx}",],
   theme: {
     extend: {
+      maxHeight: {
+        '128': '28rem',
+      },
+     
       fontFamily: {
         'sans': ['Source Sans Pro', 'sans-serif'],
       },

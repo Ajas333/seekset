@@ -6,6 +6,8 @@ from chat.models import ChatMessage,ChatRoom
 from account.models import *
 from .serializer import ChatMessageSerializer,ChatRoomSerializer
 from chat.models import CandidateNotification
+from rest_framework.permissions import AllowAny
+
 
 
 class ChatMessagesAPIView(APIView):
@@ -60,3 +62,4 @@ class NotificationStatus(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         # return Response({"status": "notification status changed"}, status=status.HTTP_200_OK)
+

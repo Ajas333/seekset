@@ -33,7 +33,7 @@ function SavedJobs() {
     },[])
     console.log("zwxecrtvybuni",jobdata)
   return (
-    <div className='pt-12'>
+    <div className='pt-12 min-h-[25rem]'>
         <div className='flex justify-center' >
               {/* job cards */}
                   <div className='flex flex-col justify-center mt-5 w-4/6'>

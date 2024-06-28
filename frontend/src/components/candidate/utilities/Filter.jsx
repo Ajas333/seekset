@@ -1,9 +1,11 @@
 import React from 'react'
 import { FaFilter } from "react-icons/fa";
+import { CiBookmarkRemove } from "react-icons/ci";
+
 function Filter(props) {
     
-    const experianceValues=["Internship","Entry Leve","Associate","Mid Level","Senior Level"]
-    const handleChange = (event) => {
+    const experianceValues=["Internship","Entry Level","Associate","Mid Level","Senior Level"]
+      const handleChange = (event) => {
         props.setDateRange(event.target.value);
       };
       const handleSalaryChange = (event) => {
@@ -15,11 +17,77 @@ function Filter(props) {
       const handleExperienceChange = (event) => {
         props.setExperienceType(event.target.value);
       };
-    
+
+      const handleFilter = ()=>{
+          console.log(props.dateRange,props.salaryRange,props.jobType,props.experienceType)
+
+          let filtered = props.jobData;
+          console.log(filtered)
+          if (props.dateRange) {
+            const now = new Date();
+            let startDate;
+
+            switch (props.dateRange) {
+                case '24h':
+                    startDate = new Date(now.setDate(now.getDate() - 1));
+                    break;
+                case '7d':
+                    startDate = new Date(now.setDate(now.getDate() - 7));
+                    break;
+                case '30d':
+                    startDate = new Date(now.setDate(now.getDate() - 30));
+                    break;
+                default:
+                    startDate = null;
+            }
+
+            if (startDate) {
+                filtered = filtered.filter(job => {
+                    const jobDate = new Date(job.applyBefore);
+                    return jobDate >= startDate;
+                });
+              }
+          }
+
+          // Salary range filter  
+          if (props.salaryRange) {
+            const minSalary = Number(props.salaryRange);
+            filtered = filtered.filter(job => {
+                const [jobMinSalary, jobMaxSalary] = job.lpa.split('-').map(Number);
+                console.log(jobMinSalary,jobMaxSalary)
+                return minSalary <= (jobMinSalary * 100000)/12;
+            });
+        }
+
+          // Job type filter
+          if (props.jobType) {
+            console.log("drftbyunjik",filtered,props.jobType)
+              filtered = filtered.filter(job => job.jobtype === props.jobType);
+          }
+
+          // Experience type filter
+          if (props.experienceType) {
+              filtered = filtered.filter(job => job.experiance === props.experienceType);
+          }
+          console.log("filtered job",filtered)
+          props.setFilterData(filtered)
+          props.setAction(true)
+        }
+
+        const removeFilter =()=>{
+          props.setAction(false)
+          props.setDateRange('')
+          props.setSalaryRange(0)
+          props.setJobType('')
+          props.setExperienceType('')
+        }
   return (
     <div>
-      <div className='w-1/5 p-3 h-full fixed'>
-          <div className='bg-blue-50 p-3'>
+      <div className='w-full p-3 mt-10 '>
+          <div className='bg-blue-50 p-3 relative'>
+            <div className='absolute top-1 right-0'>
+              <p className='text-gray-500 cursor-pointer' onClick={removeFilter}><CiBookmarkRemove size={25}/></p>
+            </div>
               <div className='flex items-center'>
                   <FaFilter  className='text-gray-500'/>
                   <span className='font-bold text-xl ml-3 text-gray-700'>Filter</span>
@@ -91,9 +159,9 @@ function Filter(props) {
                   <label className="flex items-center space-x-2">
                     <input
                       type="radio"
-                      name="date-range"
-                      value="full time"
-                      checked={props.jobType === 'full time'}
+                      name="jobtype"
+                      value="Full Time"
+                      checked={props.jobType === 'Full Time'}
                       onChange={handleTypeChange}
                       className="form-radio h-4 w-4 text-blue-600"
                     />
@@ -102,9 +170,9 @@ function Filter(props) {
                   <label className="flex items-center space-x-2">
                     <input
                       type="radio"
-                      name="date-range"
-                      value="part time"
-                      checked={props.jobType === 'part time'}
+                      name="jobtype"
+                      value="Part Time"
+                      checked={props.jobType === 'Part Time'}
                       onChange={handleTypeChange}
                       className="form-radio h-4 w-4 text-blue-600"
                     />
@@ -134,7 +202,7 @@ function Filter(props) {
                     </div>
               </div>
               <div className='flex justify-center'>
-              <button className="px-8 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200">
+              <button onClick={handleFilter} className="px-8 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200">
                     Filter
                   </button>
               </div>

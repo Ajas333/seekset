@@ -115,13 +115,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
     const handleChat = ()=>{
         setChat(true)
     }
-
-    //  console.log("candidate view applications......",current)
-    //  console.log("741852963",selectedJob)
-    //  console.log("statusssssssssssssssssssssssssssss",appStatus)
-    //  console.log("ststussssssssssssssss",status)
-    
-     
+         
   return (
     <div className=''>
       <div className=''>

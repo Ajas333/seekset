@@ -24,7 +24,7 @@ function NotificationModal({notifications,setModal,userid,setUnreadCount}) {
           })
           console.log("notification responce.......",response)
           if(response.status==200){
-            setUnreadCount(null)
+            setUnreadCount(0)
           }
         }
         catch(error){

@@ -13,6 +13,10 @@ import LoginSignup from './pages/Common/LoginSignup'
 import ForgetPassword from './pages/Common/ForgetPassword'
 import Otp from './pages/Common/Otp'
 import 'react-image-crop/dist/ReactCrop.css'
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { googleid } from './validation/ClientId'
+import InterviewRoom from '../../frontend/src/pages/Common/InterviewRoom'
+
 
 function App() {
   return (
@@ -32,17 +36,19 @@ function App() {
           theme="light"
           transition: Bounce
           />
-        <Routes>
-          <Route path='/' element={<LandingPage/>}></Route>
-          <Route path='/login' element={<LoginSignup/>}></Route>
-          <Route path='/forgot' element={<ForgetPassword/>}></Route>
-          <Route path='/otp' element={<Otp/>}></Route>
-          <Route path='employer/*' element={<EmployerWrapper/>}></Route>
-          <Route path='/reset_password/:id' element={<ResetPassword/>} ></Route>
-          <Route path='candidate/*' element={<CandidateWrapper/>}></Route>
-
-          <Route path='admin/*' element={<AdminWrapper/>}></Route>
-        </Routes>
+          <GoogleOAuthProvider clientId={googleid}>
+            <Routes>
+              <Route path='/' element={<LandingPage/>}></Route>
+              <Route path='/login' element={<LoginSignup/>}></Route>
+              <Route path='/forgot' element={<ForgetPassword/>}></Route>
+              <Route path='/interview/:id' element={<InterviewRoom/>}></Route>
+              <Route path='/otp' element={<Otp/>}></Route>
+              <Route path='employer/*' element={<EmployerWrapper/>}></Route>
+              <Route path='/reset_password/:id' element={<ResetPassword/>} ></Route>
+              <Route path='candidate/*' element={<CandidateWrapper/>}></Route>
+              <Route path='admin/*' element={<AdminWrapper/>}></Route>
+            </Routes>
+          </GoogleOAuthProvider>
         </Provider>
       </BrowserRouter>
     </div>

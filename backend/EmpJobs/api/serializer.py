@@ -16,13 +16,30 @@ class PostJobSerializer(serializers.ModelSerializer):
         if instance is not None:
             instance.save()
             return instance
+        
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = ['rolename', 'roleemail']
 
 class EmployerSerializer(serializers.ModelSerializer):
     user_full_name = serializers.CharField(source='user.full_name', read_only=True)
-
+    user_email = serializers.CharField(source='user.email')
+    user_id = serializers.CharField(source='user.id')
+    roles = serializers.SerializerMethodField()
     class Meta:
         model = Employer
-        fields = ['profile_pic','id', 'user_full_name','headquarters','hr_name','hr_phone','hr_email','address','about','website_link']
+        fields = ['profile_pic','user_id','user_email','phone','id','industry','user_full_name','headquarters','hr_name','hr_phone','hr_email','address','about','website_link','roles']
+
+    def get_roles(self, obj):
+        roles = Roles.objects.filter(employer=obj)
+        return RoleSerializer(roles, many=True).data
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -119,3 +136,8 @@ class SavedJobSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedJobs
         fields = ['candidate','job']
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = ['rolename', 'roleemail']

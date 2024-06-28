@@ -10,20 +10,45 @@ import Swal from 'sweetalert2'
 import QModal from '../../../components/candidate/utilities/QModal';
 
 
+
 function JobDetail() {
-    const baseURL='http://127.0.0.1:8000/'
+    const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access')
+   
     const { jobId } = useParams();
     const [jobData,setJobData] =useState(null)
     const [questions,setQuestions] = useState([])
     const [answers, setAnswers] = useState({});
     const [isSaved, setIsSaved] = useState(false);
     const [modal,setModal] = useState(false)
+    const [userid,setUserid] = useState(null)
     console.log(isSaved)
+
+    useEffect(() => {
+      const get_user_id = async () => {
+          try {
+              const response = await axios.get(`${baseURL}/api/account/current_user/`, {
+                  headers: {
+                      'Authorization': `Bearer ${token}`,
+                      'Accept': 'application/json',
+                      'Content-Type': 'multipart/form-data'
+                  }
+              });
+              console.log("current user response:", response);
+              if (response.status === 200) {
+                  setUserid(response.data.id);
+              }
+          } catch (error) {
+              console.log(error);
+          }
+      };
+      get_user_id();
+  }, []);
+
     useEffect(() => {
       const fetchJobData = async () => {
         try{
-          const responce = await axios.get(`${baseURL}api/empjob/getjobs/detail/${jobId}/`,{
+          const responce = await axios.get(`${baseURL}/api/empjob/getjobs/detail/${jobId}/`,{
             headers:{
               'Authorization': `Bearer ${token}`,
               'Accept' : 'application/json',
@@ -34,7 +59,7 @@ function JobDetail() {
           console.log("inside job details page",responce)
           if(responce.status==200){
             setJobData(responce.data)
-            fetchQuestions()
+            // fetchQuestions()
           }   
         }
         catch(error){
@@ -43,25 +68,26 @@ function JobDetail() {
       }
       fetchJobData()
     }, [jobId, token, baseURL])
-    const fetchQuestions = async ()=>{
-      try{
-          const responce = await axios.get(`${baseURL}api/empjob/getjobs/questions/${jobId}/`,{
-            headers:{
-              'Authorization': `Bearer ${token}`,
-              'Accept' : 'application/json',
-              'Content-Type': 'multipart/form-data'
-            }
-          });
+    // const fetchQuestions = async ()=>{
+    //   try{
+    //       const responce = await axios.get(`${baseURL}/api/empjob/getjobs/questions/${jobId}/`,{
+    //         headers:{
+    //           'Authorization': `Bearer ${token}`,
+    //           'Accept' : 'application/json',
+    //           'Content-Type': 'multipart/form-data'
+    //         }
+    //       });
         
-          console.log("questionssssssssssss",responce)
-          if(responce.status==200){
-            setQuestions(responce.data)
-          }   
-      }
-      catch(error){
-        console.log(error)
-      }
-    }
+    //       console.log("questionssssssssssss",responce)
+    //       if(responce.status==200){
+    //         setQuestions(responce.data)
+    //       }   
+    //   }
+    //   catch(error){
+    //     console.log(error)
+    //   }
+    // }
+
     if (!jobData) {
       return <div>Loading...</div>; // Display loading message while data is being fetched
   }
@@ -70,7 +96,7 @@ function JobDetail() {
     const handleSave =async()=>{
       try{
         const action = isSaved ? 'unsave' : 'save';
-        const responce = await axios.post(`${baseURL}api/empjob/savejob/${jobId}/`,{action},{
+        const responce = await axios.post(`${baseURL}/api/empjob/savejob/${jobId}/`,{action},{
           headers:{
             'Authorization': `Bearer ${token}`,
             'Accept' : 'application/json',
@@ -87,56 +113,66 @@ function JobDetail() {
       }
     }
 
-    const handleApplyChange = () => {
-      if(questions.length < 1){
-        handleApply()
-      }
-      else{
-        setModal(true)
-        // Swal.fire({
-        //   position: "center",
-        //   icon: "success",
-        //   title: 'Answer the question to apply',
-        //   showConfirmButton: false,
-        //   timer: 1500
-        // });
-      }
-    }
+   
 
-    const handleApply = async ()=>{
-      try{  
-        console.log("hehehehehhehehehehheehhehhehehhehehheh")
-        const responce = await axios.post(`${baseURL}api/empjob/applyjob/${jobId}/`,answers,{
-          headers:{
-            'Authorization': `Bearer ${token}`,
-            'Accept' : 'application/json',
-            'Content-Type': 'multipart/form-data'
-        }
-        });
+    console.log(token)
+    
+    // const handleApply = async ()=>{
+    //   try{  
+    //     console.log("hehehehehhehehehehheehhehhehehhehehheh")
+    //     const responce = await axios.post(`${baseURL}/api/empjob/applyjob/${jobId}/`,{
+    //       headers:{
+    //         'Authorization': `Bearer ${token}`,
+    //         'Accept' : 'application/json',
+    //         'Content-Type': 'multipart/form-data'
+    //     }
+    //     });
+    //     console.log(responce)
+    //     if(responce.status == 200 || responce.status == 201){
+    //       setModal(false)
+    //       Swal.fire({
+    //         position: "center",
+    //         icon: "success",
+    //         title: `${responce.data.message}`,
+    //         showConfirmButton: false,
+    //         timer: 1500
+    //       });
+    //     }
+    //   }
+    //   catch(error){
+    //     console.log(error)
+    //     Swal.fire({
+    //       position: "center",
+    //       icon: "error",
+    //       title: "Failed to apply",
+    //       showConfirmButton: false,
+    //       timer: 1500
+    //     });
+    //   }
+    // }
+
+    const handleApply = async()=>{
+      console.log("helloooooooooooooooooooooo")
+      try{
+          const responce = await axios.post(`${baseURL}/api/empjob/applyjob/${jobId}/`,{userid});
         console.log(responce)
         if(responce.status == 200 || responce.status == 201){
-          setModal(false)
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: `${responce.data.message}`,
-            showConfirmButton: false,
-            timer: 1500
-          });
-        }
+                setModal(false)
+                Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  title: `${responce.data.message}`,
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+              }
       }
       catch(error){
         console.log(error)
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "Failed to apply",
-          showConfirmButton: false,
-          timer: 1500
-        });
       }
     }
     console.log("...................................................",questions)
+    console.log("userid...........................",userid)
   return (
     <div className='mt-16'>
       <div className='flex items-center flex-col gap-2'>
@@ -187,7 +223,7 @@ function JobDetail() {
                     </div>
                     <div className=' px-3 flex gap-3'>
                         <button className="px-6 py-1 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200"
-                          onClick={handleApplyChange}>Apply
+                          onClick={handleApply}>Apply
                          </button>
                          <button className="px-6 py-1 rounded-full bg-gradient-to-b from-green-500 to-green-600 text-white focus:ring-2 focus:ring-green-400 hover:shadow-xl transition duration-200"
                           onClick={handleSave}>{isSaved ? 'Unsave' : 'Save'}
@@ -232,15 +268,6 @@ function JobDetail() {
                   <span className='text-gray-700 font-semibold text-lg'>Website link:</span>
                   <p className='text-base text-blue-700 '>{jobData.employer.website_link}</p>
                 </div>
-                <div className='flex items-center gap-2 '>
-                  <span className='text-gray-700 font-semibold text-lg'>HR Name:</span>
-                  <p className='text-base text-gray-700 '>{jobData.employer.hr_name}</p>
-                </div>
-                <div className='flex items-center gap-2 '>
-                  <span className='text-gray-700 font-semibold text-lg'>HR Email:</span>
-                  <p className='text-base text-blue-700 '>{jobData.employer.hr_email}</p>
-                </div>
-                
             </div>
       </div>    
     </div>

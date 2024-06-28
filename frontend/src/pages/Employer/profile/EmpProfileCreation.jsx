@@ -111,7 +111,6 @@ function EmpProfileCreation() {
     }
   return (
     <div>
-      
       <div className='flex w-full  bg-blue-50'>
         <div className='hidden md:inline md:w-2/5 '>
           <div className=' mt-16 mx-4  md:w-full'>
@@ -198,7 +197,7 @@ function EmpProfileCreation() {
 
                             </div>
                             {/* hr name and he phone */}
-                            <div className='flex justify-center gap-2'>
+                            {/* <div className='flex justify-center gap-2'>
                               <div className='flex flex-col w-1/2'>
                                 <Field type="text" placeholder='HR Name' name='hr_name' 
                                   className={`w-full ${errors.hr_name && touched.hr_name ? 'border-red-500' : 'mb-5'}  px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
@@ -213,16 +212,16 @@ function EmpProfileCreation() {
                               </div>
 
 
-                            </div>
+                            </div> */}
                             {/* he email */}
-                            <div className='flex justify-center'>
+                            {/* <div className='flex justify-center'>
                               <div className='flex flex-col w-full'>
                                 <Field type="Email" placeholder='HR Email' name='hr_email' 
                                   className={`w-full ${errors.hr_email && touched.hr_email ? 'border-red-500' : 'mb-5'}  px-4 py-3  text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-500 text-dark-grey-900 rounded-2xl`}
                                 />
                                 <ErrorMessage name='hr_email' component="div" className='text-red-500 text-sm mb-2'/>
                               </div>
-                            </div>
+                            </div> */}
                             {/* he address */}
                             <div className='flex justify-center'>
                               <div className='flex flex-col w-full'>

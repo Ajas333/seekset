@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import logo from '../assets/logo.png'
 import hero from '../assets/hero.png'
 import { Link } from 'react-router-dom'
+import Footer from '../components/Footer'
 
 function LandingPage() {
 
@@ -375,7 +376,7 @@ function LandingPage() {
     </section>
   
     </div>
-   
+  <Footer/>
   </Fragment>
 
   )

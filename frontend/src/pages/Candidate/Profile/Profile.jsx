@@ -78,6 +78,7 @@ function Profile() {
     setSection(section);
     setModalData(modalData || {});
   };
+  
   const handleDelete = async(data)=>{
     const actiondata = "educationDelete"
     console.log("hellllllllllooooooooooo")

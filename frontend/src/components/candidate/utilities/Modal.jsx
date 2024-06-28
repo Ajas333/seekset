@@ -91,8 +91,6 @@ function Modal({setShowModal,section, modalData,userId,setAction,action}) {
     }
     handleSubmit(formData)
   }
- 
-
   const handleSubmit = async(formData)=>{
         console.log(formData)
       try{
@@ -115,28 +113,21 @@ function Modal({setShowModal,section, modalData,userId,setAction,action}) {
       catch(error){
         console.log(error)
       }
-     
   }
     useEffect(() => {
       setSkills(Array.isArray(modalData.skills) ? modalData.skills : []);
       
     }, [section==='skills'])
-
     const handleSkill = (e) => setSkill(e.target.value);
-
     const handleAddSkill = () => {
       if (skill.trim() !== '') {
         setSkills([...skills, skill.trim()]);
         setSkill('');
       }
     };
-
     const handleRemoveSkill = (index) => {
       setSkills(skills.filter((_, i) => i !== index));
     };
-
-   
-
      const renderContent = () => {
       switch (section) {
         case 'personal':
@@ -320,17 +311,7 @@ function Modal({setShowModal,section, modalData,userId,setAction,action}) {
               
             </div>
           );
-        // case 'project':
-        //   return (
-        //     <div>
-        //       <h1>Projects</h1>
-        //       <form>
-        //         <input type="text" placeholder="Project Name" defaultValue={modalData.projectName} />
-        //         {/* Add other project fields here */}
-        //         <button type="button" onClick={handleSave}>Save</button>
-        //       </form>
-        //     </div>
-        //   );
+      
         default:
           return <div>No section matched</div>;
       }

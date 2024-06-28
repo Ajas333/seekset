@@ -26,6 +26,8 @@ urlpatterns = [
     path('api/empjob/',include("EmpJobs.api.urls")),
     path('api/interview/',include("Interview.api.urls")),
     path('chat/',include("chat.api.urls")),
+    path('dashboard/',include("dashboard.api.urls")),
+   
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
 # websocket_urlpatterns = [

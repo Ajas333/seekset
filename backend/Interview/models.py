@@ -8,6 +8,7 @@ class InterviewShedule(models.Model):
         ("Upcoming","Upcoming"),
         ("Selected","Selected"),
         ("Canceled","Canceled"),
+        ("Rejected","Rejected"),
         ("You missed","You missed")
     }
     candidate = models.ForeignKey(Candidate, on_delete = models.CASCADE,related_name="candidate")

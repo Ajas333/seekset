@@ -1,11 +1,19 @@
 import React,{useState,useEffect} from 'react'
 import SideBar from '../../../components/employer/SideBar'
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import AcceptRejectModal from '../../../components/employer/utilities/AcceptRejectModal';
+import { extractDate,extractTime,isInterviewTimeReached } from '../../../components/employer/constants/DateTime';
 
 function Shedules() {
     const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access'); 
     const [interview,setInterview] = useState([])
+    const [callModal,setCallModal] = useState(false)
+    const [modal,setModal] = useState(false)
+    const [modalData,setModalData] = useState()
+    const [action,setAction] = useState(false)
+    
     useEffect(()=>{
         const fetchData = async()=>{
             try{
@@ -26,27 +34,23 @@ function Shedules() {
             }
         }
         fetchData();
-    },[])
-    const extractDate = (datetimeString) => {
-        const dateObject = new Date(datetimeString);
-        const datePart = dateObject.toISOString().split('T')[0]; 
-        return datePart;
-    };
-    
-    const extractTime = (datetimeString) => {
-        const dateObject = new Date(datetimeString);
-        let hours = dateObject.getUTCHours();
-        const minutes = String(dateObject.getUTCMinutes()).padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12; 
-        const timePart = `${hours}:${minutes} ${ampm}`;
-        return timePart;
-    };
+    },[action])
+   
+    console.log("interviews,....................",interview)
+
+    const toggleModal = (interview_id)=>{
+      const data = interview.filter(int => int.id == interview_id)
+      setModalData(data)
+      setModal(true)
+    }
+
   return (
-    <div className='pt-12'>
-        <SideBar/>
-        <div className='sm:ml-64'>
+    <div className='pt-12 flex'>
+        <div>
+          <SideBar/>
+        </div>
+        <div className='w-full'>
+          {modal && <AcceptRejectModal setModal={setModal} modalData={modalData} setAction={setAction} action={action} />}
         <div className="container mx-auto py-8 px-4 md:px-6">
           <h1 className="text-3xl font-bold mb-6">Interview Schedules</h1>
           <div className="overflow-x-auto">
@@ -59,6 +63,7 @@ function Shedules() {
                   <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Interview Date</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Interview Time</th>
                   <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300">Status</th>
+                  <th className="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-300"></th>
                 </tr>
               </thead>
               <tbody>
@@ -77,7 +82,22 @@ function Shedules() {
                           : "text-green-500 dark:text-green-400"
                       }`}
                     >
-                      {interview.status}
+                      {isInterviewTimeReached(interview.date) && interview.status ==="Upcoming" ? (
+                        <Link to={`/interview/${interview.id}`}>
+                          <button className="bg-blue-500 text-white py-1 px-3 rounded">Start</button>
+                        </Link>
+                      ):(
+
+                      interview.status
+                      )}
+                    </td>
+                    <td>
+                    {isInterviewTimeReached(interview.date) && interview.status ==="Upcoming" ? (            
+                          <button className="bg-indigo-500 text-white py-1 px-3 rounded" onClick={()=>toggleModal(interview.id)}>Action</button>
+                      ):(
+
+                    ""
+                      )}
                     </td>
                   </tr>
                 ))}

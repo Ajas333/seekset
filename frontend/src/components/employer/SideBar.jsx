@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import { MdOutlineAddTask } from "react-icons/md";
-import {Link} from 'react-router-dom'
+import {Link,useNavigate} from 'react-router-dom'
+import { useSelector, useDispatch } from "react-redux";
 import { HiHome } from "react-icons/hi2";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { MdOutlineMessage } from "react-icons/md";
@@ -9,8 +10,8 @@ import { FaUserTie } from "react-icons/fa";
 import { PiUserCircleCheckFill } from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 import { w3cwebsocket as W3CWebSocket, w3cwebsocket } from "websocket";
+import { set_Authentication } from '../../Redux/Authentication/authenticationSlice';
 
 
 function SideBar() {
@@ -18,6 +19,9 @@ function SideBar() {
   const token = localStorage.getItem('access')
   const userBasicDetails = useSelector((state)=>state.user_basic_details)
   const user_id = userBasicDetails.user_type_id
+  const navigate=useNavigate();
+  const dispatch=useDispatch();
+  const authentication_user = useSelector((state)=> state.authentication_user);
   console.log("user_id........................",user_id)
 
   // useEffect(()=>{
@@ -45,6 +49,20 @@ function SideBar() {
   // connectToWebSocket(user_id);
   // },[])
 
+  const handleLogout = ()=>{
+    localStorage.clear();
+    dispatch(
+      set_Authentication({
+        name: null,
+        email:null,
+        isAuthenticated: false,
+        isAdmin: false,
+        usertype:null,
+      })
+    );
+    navigate('/login')
+   }
+
   return (
     <div>
         <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar" type="button" className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
@@ -54,7 +72,7 @@ function SideBar() {
           </svg>
         </button>
 
-      <aside id="default-sidebar" className="fixed top-10 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+      <aside id="default-sidebar" className=" top-10 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
             <ul className="space-y-2 font-medium">
               <li>
@@ -106,17 +124,18 @@ function SideBar() {
                   </p>
                   </Link>
               </li>
-              <li>
-                  <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                  <PiUserCircleCheckFill className='text-gray-500' size={25}/>
-                    <span className="flex-1 ms-3 whitespace-nowrap">Profile</span>
-                  </a>
+              <li><Link to={'/employer/profile/'}>
+                    <p className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                      <PiUserCircleCheckFill className='text-gray-500' size={25}/>
+                      <span className="flex-1 ms-3 whitespace-nowrap">Profile</span>
+                    </p>
+                  </Link>
               </li>
               <li>
-                  <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <p onClick={handleLogout} className=" cursor-pointerflex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                   <IoIosLogOut className='text-gray-500' size={25}/>
                     <span className="flex-1 ms-3 whitespace-nowrap">Sign Out</span>
-                  </a>
+                  </p>
               </li>
             </ul>
         </div>

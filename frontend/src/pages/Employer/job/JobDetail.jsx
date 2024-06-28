@@ -3,6 +3,7 @@ import SideBar from '../../../components/employer/SideBar'
 import { Link,useParams } from 'react-router-dom'
 import axios from 'axios';
 import Swal from 'sweetalert2'
+import JobDetailMOdal from '../../../components/employer/utilities/JobDetailMOdal';
 
 
 function JobDetail() {
@@ -11,6 +12,7 @@ function JobDetail() {
   const [jobData,setJobData]=useState({});
   const { jobId } = useParams();
   const [status,setStatus]=useState()
+  const [modal,setModal] = useState(false)
 
   useEffect(() => {
     const fetchJobData = async () => {
@@ -110,21 +112,18 @@ function JobDetail() {
     }
   };
 
-  
+  const toggleModal = ()=>{
+    setModal(true)
+  }
 
   return (
-    <div className='pt-14 '>
-      <SideBar/>
-      <div className="p-4 sm:ml-64">
-          <div className='flex bg-gray-50'>
-            <Link to={'/employer/home/'}>
-              <span className='bg-gray-50 cursor-pointer'>
-              Home
-              </span>
-            </Link>
-            <span>/</span>
-          <span>Job Details</span>
-          </div>
+    <div className='pt-14 flex'>
+      <div>
+       <SideBar/>
+      </div>
+      
+      <div className="p-4 w-full">
+         {modal && <JobDetailMOdal setModal={setModal} jobData={jobData} />}
         <div className=''>
         <div>
             <h1 className="text-2xl font-bold mt-4 mb-2">Job Details</h1>
@@ -148,7 +147,7 @@ function JobDetail() {
                 <p>{jobData.responsibility}</p>
                 
                 <div className="flex justify-between mt-4">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={toggleModal}>Edit</button>
                     {status?(<button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={handleDeactivate}>Deactivate</button>):
                     (<button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={handleActivate}>Activate</button>)}
                    

@@ -5,6 +5,8 @@ import CandidateSignin from '../Candidate/CandidateSignin';
 import EmpLogin from '../Employer/EmpLogin';
 import EmpSignup from '../Employer/EmpSignuo';
 import Spinner from './Spinner';
+import logo from '../../assets/logo.png'
+import { Link } from 'react-router-dom';
 
 function LoginSignup() {
     const [vantaEffect, setVantaEffect] = useState(0);
@@ -18,16 +20,7 @@ function LoginSignup() {
         setVantaEffect(
           NET({
             el: vantaRef.current,
-            // THREE: THREE,
-            // mouseControls: true,
-            // touchControls: true,
-            // gyroControls: false,
-            // minHeight: 200.0,
-            // minWidth: 200.0,
-            // scale: 1.0,
-            // scaleMobile: 1.0,
-            // color: 0x10384f,
-            // waveSpeed: 1.3,
+           
             mouseControls: true,
             touchControls: true,
             gyroControls: false,
@@ -48,11 +41,23 @@ function LoginSignup() {
     }, [vantaEffect]);
   return (
     
-    <div className='w-screen h-screen flex justify-center items-center' ref={vantaRef}>
-    <div className='bg-white rounded-tr-4xl rounded-bl-4xl h-3/4 w-3/5 flex'>
+    <div className='w-screen h-screen flex justify-center items-center relative' ref={vantaRef} >
+    <div className='bg-white rounded-tr-4xl rounded-bl-4xl h-auto   w-3/5 flex'>
       {!isSpinner && (
         <>
-          <div className='content bg-gradient-to-br from-blue-100 to-blue-400 w-2/4 rounded-bl-4xl p-8'>
+          <div className='content bg-gradient-to-br from-blue-100 to-blue-400 w-2/4 rounded-bl-4xl p-8 relative'>
+          <div className='absolute top-0 left-0'>
+            <Link to={'/'}>
+              <div className='ml-3  flex cursor-pointer'>
+                <div className='mt-2'>
+                  <img src={logo} alt="" className='w-10 h-8'/>
+                </div>
+                <p className='mt-2 text-xl font-bold font-sans text-indigo-900'>
+                  SeekSet
+                </p>
+            </div>
+            </Link>
+            </div>
             <div className='flex flex-col h-full justify-between'>
               <div className='p-4 mb-6'>
                 <h2 className='text-3xl font-bold text-blue-800 mb-2'>

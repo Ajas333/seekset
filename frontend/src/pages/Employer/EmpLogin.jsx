@@ -10,6 +10,7 @@ import { useSelector} from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { LoginSchema,initialValues } from '../../validation/LoginValidation';
 import { toast } from 'react-toastify';
+import { GoogleLogin } from '@react-oauth/google';
 
 function EmpLogin() {
   const authentication_user = useSelector((state)=> state.authentication_user);
@@ -31,10 +32,7 @@ function EmpLogin() {
       const responce = await axios.post(baseURL+'api/account/Emplogin/',formData)
       console.log("login response.......................................................",responce)
       if(responce.status==200){
-          if(responce.data.user_type === 'candidate'){
-              setFormError('only Employers can login here');
-              return
-          }
+         
         localStorage.setItem('access',responce.data.access_token)
         localStorage.setItem('refresh',responce.data.refresh_token)
         setUserId(responce.data.user_data.id)
@@ -77,150 +75,131 @@ function EmpLogin() {
       setSubmitting(false);
     }
   } 
+
+  // const GoogleTestlogin = async (userDetails)=>{
+  //     console.log("userDetails after login",userDetails)
+  //     const formData ={
+  //       client_id : userDetails,
+  //     };
+  //     try{
+  //         const response = await axios.post(baseURL+'api/account/auth/employer/',formData)
+  //         console.log("auth responce ",response)
+  //         if(response.status==200){
+         
+  //           localStorage.setItem('access',response.data.access_token)
+  //           localStorage.setItem('refresh',response.data.refresh_token)
+  //           setUserId(response.data.user_data.id)
+    
+  //           dispatch(
+  //             set_Authentication({
+  //               name: jwtDecode(response.data.access_token).name,
+  //               email:response.data.email,
+  //               isAuthenticated:true,
+  //               isAdmin:response.data.isAdmin,
+  //               usertype:response.data.usertype,
+  //             })
+  //           )
+  //             dispatch(
+  //               set_user_basic_details({
+  //                 profile_pic : response.data.user_data.profile_pic,
+  //                 user_type_id : response.data.user_data.id,
+  //               })
+  //             )
+  //             toast.success('Login successful!',{
+  //               position: "top-center",
+  //             });
+  //             if(response.data.user_data.completed == false ){
+  //               navigate('/employer/profile_creation/')
+  //               }
+  //               else{
+                
+  //               navigate('/employer/')
+  //           }
+  //           }
+  //           else {
+  //             console.log("responce...............................",response)
+  //             setFormError(response.data.message)
+  //           }
+  //     }
+  //     catch(error){
+  //       console.log(error)
+  //     }
+  // }
   
 
   return (
     <div>
-       
-        {/* <div className='flex w-full h-screen bg-blue-50'>
-          <div className='hidden md:inline md:w-2/5 '>
-                <div className='mt-16 mx-4  md:w-full'>
-                    <h3 className='font-sans text-3xl font-bold drop-shadow-md text-blue-800'>Find Best Candidates</h3>
-                    <p className='text-blue-500 font-semibold'>5 lakh+ job Seekers </p>
-                </div>
-                <div className='flex justify-center'>
-                  <img src={login_im} alt="" className='w-96' />
-                </div>
-          </div>
-          <div className= 'w-full h-screen md:w-3/5 flex justify-end '>
-            <div className='bg-white w-full h-full  md:rounded-l-lg shadow-2xl '>
-                  <div className='flex h-full'>  
-                      <div className="flex items-center justify-center w-full ">
-                        <div className="flex items-center ">
-                        <Formik
-                            initialValues={initialValues}
-                            validationSchema={LoginSchema}
-                            onSubmit={handleLoginSubmit}
-                          >
-                            {({ errors, touched, isSubmitting }) => (
-                              <Form className="flex flex-col w-full h-full pb-6 text-center">
-                                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Sign In</h3>
-                                <p className="mb-4 text-grey-700">Enter your email and password</p>
-
-                                <div className="flex items-center mb-3">
-                                  <hr className="h-0 border-b border-solid border-grey-500 grow" />
-                                </div>
-
-                                <Field
-                                  id="email"
-                                  type="email"
-                                  name="email"
-                                  placeholder="Enter your email id"
-                                  className={`flex items-center ${errors.email && touched.email ? 'border-red-500' : 'mb-7'} w-full px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400  placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl`}
-                                />
-                                <ErrorMessage name='email' component='div' className='text-red-500 text-sm mb-2' />
-
-                                <Field
-                                  id="password"
-                                  type="password"
-                                  name="password"
-                                  placeholder="Enter your password"
-                                  className={`flex items-center ${errors.password && touched.password ? "border-red-500" : "mb-5"} w-full px-4 py-3  mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl`}
-                                />
-                                <ErrorMessage name='password' component='div' className='text-red-500 text-sm mb-2' />
-                                {formError ?
-                                    <div className='flex justify-start mb-5  pl-3 text-red-600 '>
-
-                                      <p >{formError}</p>
-                                    </div>
-                                    : ""
-                                  }
-                                <div className="flex flex-row justify-end mb-4">
-                                  <Link to={'/employer/forgot/'}>
-                                    <p className="mr-4 text-sm font-medium text-purple-blue-500">
-                                      Forget password?
-                                    </p>
-                                  </Link>
-                                </div>
-
-                                <button type='submit' disabled={isSubmitting} className="w-full px-4 py-3 mb-3 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500">
-                                  Sign In
-                                </button>
-                                
-                                <p className="text-sm leading-relaxed text-grey-900">
-                                  Not registered yet? <Link to={'/employer/signup/'}><span className="font-bold text-grey-700 cursor-pointer">Create an Account</span></Link>
-                                </p>
-                              </Form>
-                            )}
-                          </Formik>
-                        </div>
-                      </div>
-                  </div>
-            </div>
-          </div>
-          
-        </div> */}
          <div className='flex h-full'>  
-                      <div className="flex items-center justify-center w-full ">
-                        <div className="flex items-center ">
-                        <Formik
-                            initialValues={initialValues}
-                            validationSchema={LoginSchema}
-                            onSubmit={handleLoginSubmit}
-                          >
-                            {({ errors, touched, isSubmitting }) => (
-                              <Form className="flex flex-col w-full h-full pb-6 text-center">
-                                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Employer Sign In</h3>
-                                
-                                <div className="flex items-center mb-3">
-                                  <hr className="h-0 border-b border-solid border-grey-500 grow" />
-                                </div>
-
-                                <Field
-                                  id="email"
-                                  type="email"
-                                  name="email"
-                                  placeholder="Enter your email id"
-                                  className={`flex items-center ${errors.email && touched.email ? 'border-red-500' : 'mb-7'} w-full px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400  placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl`}
-                                />
-                                <ErrorMessage name='email' component='div' className='text-red-500 text-sm mb-2' />
-
-                                <Field
-                                  id="password"
-                                  type="password"
-                                  name="password"
-                                  placeholder="Enter your password"
-                                  className={`flex items-center ${errors.password && touched.password ? "border-red-500" : "mb-5"} w-full px-4 py-3  mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl`}
-                                />
-                                <ErrorMessage name='password' component='div' className='text-red-500 text-sm mb-2' />
-                                {formError ?
-                                    <div className='flex justify-start mb-5  pl-3 text-red-600 '>
-
-                                      <p >{formError}</p>
-                                    </div>
-                                    : ""
-                                  }
-                                <div className="flex flex-row justify-end mb-4">
-                                  <Link to={'/forgot'}>
-                                    <p className="mr-4 text-sm font-medium text-purple-blue-500">
-                                      Forget password?
-                                    </p>
-                                  </Link>
-                                </div>
-
-                                <button type='submit' disabled={isSubmitting} className="w-full px-4 py-3 mb-3 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500">
-                                  Sign In
-                                </button>
-                                
-                                <p className="text-sm leading-relaxed text-grey-900">
-                                  Not registered yet? <Link to={'/employer/signup/'}><span className="font-bold text-grey-700 cursor-pointer">Create an Account</span></Link>
-                                </p>
-                              </Form>
-                            )}
-                          </Formik>
+              <div className="flex items-center justify-center w-full ">
+                <div className="flex items-center ">
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={LoginSchema}
+                    onSubmit={handleLoginSubmit}
+                  >
+                    {({ errors, touched, isSubmitting }) => (
+                      <Form className="flex flex-col w-full h-full pb-6 text-center">
+                        <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Employer Sign In</h3>
+                        
+                        <div className="flex items-center mb-3">
+                          <hr className="h-0 border-b border-solid border-grey-500 grow" />
                         </div>
-                      </div>
-                  </div>
+
+                        <Field
+                          id="email"
+                          type="email"
+                          name="email"
+                          placeholder="Enter your email id"
+                          className={`flex items-center ${errors.email && touched.email ? 'border-red-500' : 'mb-7'} w-full px-4 py-3 mr-2 text-sm font-medium outline-none focus:bg-grey-400  placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl`}
+                        />
+                        <ErrorMessage name='email' component='div' className='text-red-500 text-sm mb-2' />
+
+                        <Field
+                          id="password"
+                          type="password"
+                          name="password"
+                          placeholder="Enter your password"
+                          className={`flex items-center ${errors.password && touched.password ? "border-red-500" : "mb-5"} w-full px-4 py-3  mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl`}
+                        />
+                        <ErrorMessage name='password' component='div' className='text-red-500 text-sm mb-2' />
+                        {formError ?
+                            <div className='flex justify-start mb-5  pl-3 text-red-600 '>
+
+                              <p >{formError}</p>
+                            </div>
+                            : ""
+                          }
+                        <div className="flex flex-row justify-end mb-4">
+                          <Link to={'/forgot'}>
+                            <p className="mr-4 text-sm font-medium text-purple-blue-500">
+                              Forget password?
+                            </p>
+                          </Link>
+                        </div>
+
+                        <button type='submit' disabled={isSubmitting} className="w-full px-4 py-3 mb-3 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500">
+                          Sign In
+                        </button>
+                        {/* <div className='flex justify-center'>
+                          <GoogleLogin
+                              onSuccess={credentialResponse => {
+                                GoogleTestlogin(credentialResponse.credential);
+                              }}
+                              onError={() => {
+                               console.log('Login Failed');
+                              }}
+                            />
+                        </div> */}
+                        
+                        <p className="text-sm leading-relaxed text-grey-900">
+                          Not registered yet? <Link to={'/employer/signup/'}><span className="font-bold text-grey-700 cursor-pointer">Create an Account</span></Link>
+                        </p>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
+              </div>
+          </div>
     </div>
   )
 }

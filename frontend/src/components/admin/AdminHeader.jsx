@@ -40,7 +40,7 @@ function AdminHeader() {
         },
       ];
   return (
-    <div className='w-full flex justify-between h-12 bg-blue-200' >
+    <div className=' fixed w-full flex justify-between h-12 bg-blue-200 z-50' >
     <Link to={'/'}>
     <div className='ml-3  flex cursor-pointer'>
         <div className='mt-2'>

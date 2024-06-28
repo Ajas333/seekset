@@ -14,6 +14,7 @@ import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetails
 import { FaUserTie } from "react-icons/fa";
 import NotificationModal from './utilities/NotificationModal';
 import axios from 'axios';
+import InterviewCallModal from './utilities/InterviewCallModal';
 
 function CandidateHeader() {
   const authentication_user = useSelector((state)=> state.authentication_user);
@@ -28,6 +29,9 @@ function CandidateHeader() {
   const [notifications, setNotifications] = useState([]);
   const [userid,setUserid] = useState(null)
   const [unreadCount, setUnreadCount] = useState(0);
+  const [interviewModal,setInterviewModal] = useState(false)
+  const [roomId,setRoomId] = useState()
+  const [intID,setIndId] = useState()
   useEffect(()=>{
       console.log("inside header image",profile_image)
   },[userBasicDetails.profile_pic])
@@ -95,10 +99,20 @@ function CandidateHeader() {
 
 useEffect(() => {
     if (userid !== null) {
-        const ws = new WebSocket(`${baseURL}/ws/notifications/${userid}/`);
-
+       
+ const ws = new WebSocket(`${baseURL}/ws/notifications/${userid}/`);
         ws.onmessage = (e) => {
           const data = JSON.parse(e.data);
+          if (data.message && data.message.startsWith('Interview call')) {
+            console.log("tryuvuyfvyvvy",data)
+            const parts = data.message.split(' - '); // Split the message by ' - '
+            const roomId = parts[1].trim(); // The second part is the roomId
+            const interviewId = parts[2].trim(); // The third part is the interviewId
+            setRoomId(roomId)
+            setIndId(interviewId)
+            setInterviewModal(true)
+          }
+          console.log("interview data",data)
           setNotifications((prevNotifications) => {
               const newNotifications = [...prevNotifications, data];
               const unreadCount = newNotifications.filter(n => !n.is_read).length;
@@ -123,8 +137,9 @@ useEffect(() => {
 console.log("notifications.......................................",notifications)
 console.log("notification count.......................",unreadCount)
   return (
-    <div className='w-full flex justify-between h-12 bg-blue-200 fixed top-0 z-50' >
+    <div className=' w-full flex justify-between h-12 bg-blue-200 fixed top-0 z-50' >
       {modal && <NotificationModal setUnreadCount={setUnreadCount} notifications={notifications} setModal={setModal} userid={userid} />}
+      {interviewModal && <InterviewCallModal roomId={roomId} intID={intID} setInterviewModal={setInterviewModal}/>}
         <Link to={'/'}>
         <div className='ml-3  flex cursor-pointer'>
             <div className='mt-2'>
@@ -149,10 +164,7 @@ console.log("notification count.......................",unreadCount)
                       <p className='text-xs font-medium text-gray-500'>Message</p>
                 </div>
                 </Link>
-                <div className='flex flex-col justify-center items-center'>
-                    <FaEnvelopeOpenText  className='w-5 h-5 '/>
-                      <p className='text-xs font-medium text-gray-500'>Accepted jobs</p>
-                </div>
+                
                 <Link to={'/candidate/shedules/'}>
                 <div className='flex flex-col justify-center items-center cursor-pointer'>
                     <FaUserTie  className='w-5 h-5 '/>

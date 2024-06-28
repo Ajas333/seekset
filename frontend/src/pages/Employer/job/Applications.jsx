@@ -72,9 +72,11 @@ console.log("selected jobs.......",selectedJob)
 console.log("current candidatemigkjg",current)
 console.log("questionsssssssssssssssss",questions)
 return (
-    <div className='pt-12'>
+    <div className=' flex pt-12'>
+        <div>
         <SideBar/>
-        <div className='ml-64'>
+        </div>
+        <div className='w-full'>
             <div className='flex gap-3'>
             <div className=' max-h-screen w-2/5 p-3 flex flex-col text-gray-700 bg-gray-100 shadow-md bg-clip-border rounded-xl'>
                 <div className='flex bg-white mb-2 p-3 rounded-md px '>
