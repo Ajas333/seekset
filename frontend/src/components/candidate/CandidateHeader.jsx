@@ -15,11 +15,12 @@ import { FaUserTie } from "react-icons/fa";
 import NotificationModal from './utilities/NotificationModal';
 import axios from 'axios';
 import InterviewCallModal from './utilities/InterviewCallModal';
+import { baseURL } from '../Urls';
 
 function CandidateHeader() {
   const authentication_user = useSelector((state)=> state.authentication_user);
   const userBasicDetails = useSelector((state)=>state.user_basic_details);
-  const baseURL='http://127.0.0.1:8000'
+  // const baseURL='http://127.0.0.1:8000'
   const token = localStorage.getItem('access'); 
   const navigate=useNavigate();
   const dispatch=useDispatch();
@@ -33,7 +34,7 @@ function CandidateHeader() {
   const [roomId,setRoomId] = useState()
   const [intID,setIndId] = useState()
   useEffect(()=>{
-      console.log("inside header image",profile_image)
+      // console.log("inside header image",profile_image)
   },[userBasicDetails.profile_pic])
   // console.log("inside user header...............",authentication_user)
   // console.log("inside user header..........userbasic details...........",userBasicDetails)
@@ -86,12 +87,12 @@ function CandidateHeader() {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log("current user response:", response);
+            // console.log("current user response:", response);
             if (response.status === 200) {
                 setUserid(response.data.id);
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     };
     get_user_id();
@@ -104,7 +105,7 @@ useEffect(() => {
         ws.onmessage = (e) => {
           const data = JSON.parse(e.data);
           if (data.message && data.message.startsWith('Interview call')) {
-            console.log("tryuvuyfvyvvy",data)
+            // console.log("tryuvuyfvyvvy",data)
             const parts = data.message.split(' - '); // Split the message by ' - '
             const roomId = parts[1].trim(); // The second part is the roomId
             const interviewId = parts[2].trim(); // The third part is the interviewId
@@ -112,7 +113,7 @@ useEffect(() => {
             setIndId(interviewId)
             setInterviewModal(true)
           }
-          console.log("interview data",data)
+          // console.log("interview data",data)
           setNotifications((prevNotifications) => {
               const newNotifications = [...prevNotifications, data];
               const unreadCount = newNotifications.filter(n => !n.is_read).length;
@@ -122,7 +123,7 @@ useEffect(() => {
       };
 
         ws.onclose = () => {
-            console.log('WebSocket closed');
+            // console.log('WebSocket closed');
         };
 
         return () => {
@@ -134,8 +135,8 @@ useEffect(() => {
 
 
 
-console.log("notifications.......................................",notifications)
-console.log("notification count.......................",unreadCount)
+// console.log("notifications.......................................",notifications)
+// console.log("notification count.......................",unreadCount)
   return (
     <div className=' w-full flex justify-between h-12 bg-blue-200 fixed top-0 z-50' >
       {modal && <NotificationModal setUnreadCount={setUnreadCount} notifications={notifications} setModal={setModal} userid={userid} />}

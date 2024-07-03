@@ -1,127 +1,12 @@
-// import React,{useState,useEffect} from 'react'
-// import Sidebar from '../../components/admin/Utilities/Sidebar'
-// import axios from 'axios';
-// import { Link } from 'react-router-dom';
 
-
-// function CandidateList() {
-//   const baseURL = "http://127.0.0.1:8000";
-//   const [candidateList,setCandidateList] = useState([])
-
-//   useEffect(()=>{
-//     const fetchData = async()=>{
-//       try{
-//         const response = await axios.get(baseURL+'/dashboard/clist/')
-//         console.log(response)
-//         if(response.status == 200){
-//           setCandidateList(response.data)
-//         } 
-//       } 
-//       catch(error){
-//         console.log(error)
-//       }
-//     }
-//     fetchData()
-//   },[])
-//   console.log(candidateList)
-//   return (
-//     <div className='flex'>
-//     <div className='w-64'>
-//         <Sidebar/>
-//     </div>
-//     <div className=' w-full pl-11 mt-12'>
-//         <div className=' flex justify-between'>
-//           <span className='text-xl font-bold'>Candidat List</span>
-//           <div className='w-2/5 py-2'>
-                
-//             <form className=" mx-auto">   
-//                 <label for="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-//                 <div className="relative">
-//                     <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-//                         <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-//                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-//                         </svg>
-//                     </div>
-//                     <input type="search" id="default-search" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search..." required />
-//                 </div>
-//             </form>
-
-//           </div>
-//         </div>
-//         <div className=''>
-//           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-//               <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  
-//                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-//                       <tr>
-//                           <th scope="col" className="px-6 py-3">
-//                               Profile Pic
-//                           </th>
-//                           <th scope="col" className="px-6 py-3">
-//                               Name
-//                           </th>
-//                           <th scope="col" className="px-6 py-3">
-//                               Email
-//                           </th>
-//                           <th scope="col" className="px-6 py-3">
-//                               Phone
-//                           </th>
-//                           <th scope="col" className="px-6 py-3">
-//                               Status
-//                           </th>
-//                           <th scope="col" className="px-6 py-3">
-//                               Action
-//                           </th>
-//                       </tr>
-//                   </thead>
-//                   <tbody>
-//                     {candidateList.map((list,index)=>(
-//                       <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-//                         <Link to={`/admin/cdetails/${list.id}`}>
-//                           <th scope="row" className="px-6 py-4 ">
-//                             <img className="w-10 h-10 rounded-full" src={baseURL+list.profile_pic} alt="Rounded avatar"/>
-//                           </th>
-//                             </Link>
-//                           <td className="px-6 py-4">
-//                               {list.user_name}
-//                           </td>
-//                           <td className="px-6 py-4">
-//                               {list.email}
-//                           </td>
-//                           <td className="px-6 py-4">
-//                               {list.phone}
-//                           </td>
-//                           <td className="px-6 py-4">
-//                               {list.status == true ?("Active"):("Inactive")}
-//                           </td>
-//                           <td className="px-6 py-4 text-right">
-//                               <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">{list.status == true ? (
-//                                 <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-//                                   Block</button>
-//                               ):(
-//                                 <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-//                                   Unblock</button>
-//                               )}</a>
-//                           </td>
-//                       </tr>
-//                     ))}
-//                   </tbody>
-//               </table>
-//           </div>
-//         </div>
-//     </div>
-//     </div>
-//   )
-// }
-
-// export default CandidateList
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/admin/Utilities/Sidebar';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { baseURL } from '../../components/Urls';
 
 function CandidateList() {
-    const baseURL = "http://127.0.0.1:8000";
+    // const baseURL = "http://127.0.0.1:8000";
     const [candidateList, setCandidateList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -133,7 +18,7 @@ function CandidateList() {
                     setCandidateList(response.data);
                 }
             } catch (error) {
-                console.error('Error fetching candidate list:', error);
+                // console.error('Error fetching candidate list:', error);
             }
         };
 

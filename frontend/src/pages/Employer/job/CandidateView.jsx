@@ -3,11 +3,11 @@ import axios from 'axios'
 import SheduleModal from '../../../components/employer/utilities/SheduleModal'
 import Swal from 'sweetalert2'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-
+import { baseURL } from '../../../components/Urls';
 import ChatModal from '../../../components/employer/utilities/ChatModal';
 
 function CandidateView({selectedJob,setChange,current,questions}) {
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access')
     const [status,setStatus] = useState(false)
     const [appStatus,setAppStatus]=useState(current.status)
@@ -23,11 +23,11 @@ function CandidateView({selectedJob,setChange,current,questions}) {
     const employer_id = selectedJob.employer_id
     const emp_name = selectedJob.employer_name
 
-    console.log()
+    // console.log()
     
     useEffect(()=>{
         const val = value.filter((e)=>appStatus == e)
-        console.log("vallllllllllllllllllllllll",val)
+        // console.log("vallllllllllllllllllllllll",val)
         if(val.length<1){
             setStatus(true)
         }
@@ -48,10 +48,10 @@ function CandidateView({selectedJob,setChange,current,questions}) {
                     'Content-Type': 'multipart/form-data'
                   }
             });
-            console.log(responce)
+            // console.log(responce)
         }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }
     }
    
@@ -65,7 +65,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
     const handlResume = ()=>{
         changeStatus('Resume Viewd')
         setAppStatus('Resume Viewd')
-        console.log("resume change ststus.................")
+        // console.log("resume change ststus.................")
     }
     const cancellApplication = async ()=>{
         try{
@@ -79,7 +79,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
                     'Content-Type': 'multipart/form-data'
                   }
             })
-            console.log(responce)
+            // console.log(responce)
             if(responce.status == 200){
                 setAppStatus('Interview Cancelled')
                 changeStatus('Interview Cancelled')
@@ -91,7 +91,7 @@ function CandidateView({selectedJob,setChange,current,questions}) {
             }
         }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }
     }
     const handleCancell = ()=>{

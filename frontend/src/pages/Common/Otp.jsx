@@ -5,8 +5,8 @@
     import otp_img from '../../assets/otp.svg'
     import axios from 'axios'
     import Swal from 'sweetalert2'
+    import { baseURL } from '../../components/Urls';
     
-
 
     function Otp() {
 
@@ -15,7 +15,7 @@
         const [otpValue, setOtpValue] = useState('');
         const navigate = useNavigate();
         const twoDigits = (num) => String(num).padStart(2, '0');
-        const baseURL = 'http://127.0.0.1:8000/';
+        // const baseURL = 'http://127.0.0.1:8000/';
         const [resend, setResend] = useState(false);
         const email= localStorage.getItem('email')
        
@@ -47,9 +47,9 @@
         const handleOTPSubmit = async (event) => {
           event.preventDefault();
           try {
-            const response = await axios.post(baseURL + 'api/account/otp_verify/', { otp: otpValue, email });
+            const response = await axios.post(baseURL + '/api/account/otp_verify/', { otp: otpValue, email });
             // Handle response
-            console.log("response............",response);
+            // console.log("response............",response);
             if(response.status == 200){
               localStorage.removeItem('email');
               if(response.data.usertype ==="candidate"){
@@ -60,7 +60,7 @@
               }
             }
           } catch (error) {
-            console.error('Error verifying OTP:', error);
+            // console.error('Error verifying OTP:', error);
           }
         };
       
@@ -68,8 +68,8 @@
       
         const ResendOtp = async () => {
           try {
-            const response = await axios.post(`${baseURL}api/account/resend_otp/`, { email });
-            console.log(response.data);
+            const response = await axios.post(`${baseURL}/api/account/resend_otp/`, { email });
+            // console.log(response.data);
             setMinute(1);
             setSecond(30);
             setResend(false);
@@ -81,7 +81,7 @@
               timer: 1500,
             });
           } catch (error) {
-            console.error('Error resending OTP:', error);
+            // console.error('Error resending OTP:', error);
           }
         };
       

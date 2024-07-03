@@ -3,10 +3,11 @@ import { IoMdClose } from "react-icons/io";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import { baseURL } from '../../Urls';
 
 function RoleModal({setRoleModal,action,setAction}) {
     const  modalRef = useRef();
-     const baseURL='http://127.0.0.1:8000'
+    //  const baseURL='http://127.0.0.1:8000'
     const closeModal =(e)=>{
       if(modalRef.current === e.target){
         setRoleModal();
@@ -32,7 +33,7 @@ function RoleModal({setRoleModal,action,setAction}) {
       });
 
       const onSubmit = async(values) => {
-        console.log('Form data', values);
+        // console.log('Form data', values);
         try {
             const response = await axios.post(`${baseURL}/api/empjob/addrole/`, { roles: values.roles }, {
               headers: {
@@ -44,9 +45,9 @@ function RoleModal({setRoleModal,action,setAction}) {
                 setRoleModal(false)
                 setAction(!action)
             }
-            console.log('Form data submitted', response.data);
+            // console.log('Form data submitted', response.data);
           } catch (error) {
-            console.error('Error submitting form', error);
+            // console.error('Error submitting form', error);
           }
       };
 

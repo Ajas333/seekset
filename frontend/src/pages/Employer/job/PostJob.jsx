@@ -6,9 +6,10 @@ import Qmodal from '../../../components/employer/utilities/Qmodal'
 import Swal from 'sweetalert2'
 import { Formik,Form,Field,ErrorMessage } from 'formik'
 import { PostJobValidationSchema,initialValue } from '../../../validation/PostJobValidation'
+import { baseURL } from '../../../components/Urls'
 
 function PostJob() {
-  const baseURL='http://127.0.0.1:8000/'
+  // const baseURL='http://127.0.0.1:8000/'
   const token = localStorage.getItem('access')
   const [data,setData]=useState({
     'title':"",
@@ -35,7 +36,7 @@ function PostJob() {
   const handleChange=(e)=>{
     setData({...data,[e.target.name]:e.target.value})
   }
-  console.log(data)
+  // console.log(data)
 
   const handleSubmitSwal = (values) =>{
     data.title=values.title
@@ -76,7 +77,7 @@ function PostJob() {
 
   const handleSubmit = async() =>{
     const lpa= `${data.saleryfrom}-${data.saleryto}`
-    console.log(lpa)
+    // console.log(lpa)
     const formData = new FormData()
     formData.append("title",data.title || "")
     formData.append("location",data.location || "")
@@ -93,7 +94,7 @@ function PostJob() {
     //   }
     // });
     try{
-      const responce = await axios.post(baseURL+'api/empjob/postjob/',formData,{
+      const responce = await axios.post(baseURL+'/api/empjob/postjob/',formData,{
         headers:{
           'Authorization': `Bearer ${token}`,
           'Accept' : 'application/json',
@@ -119,15 +120,15 @@ function PostJob() {
         })
         setQuestions(['']);
         setModal(false)
-        console.log(data)
+        // console.log(data)
 
       }
     }
     catch(error){
-      console.log("error from backend",error)
+      // console.log("error from backend",error)
     }
     
-    console.log(responce)
+    // console.log(responce)
   }
   
   return (

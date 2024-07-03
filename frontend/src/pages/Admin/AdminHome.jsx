@@ -1,10 +1,11 @@
 import React,{useEffect,useState} from 'react'
 import Sidebar from '../../components/admin/Utilities/Sidebar'
 import axios from 'axios';
+import { baseURL } from '../../components/Urls';
 
 
 function AdminHome() {
-  const baseURL = "http://127.0.0.1:8000";
+  // const baseURL = "http://127.0.0.1:8000";
   const [counts,setCounts] = useState()
   
   
@@ -12,19 +13,19 @@ function AdminHome() {
     const fetchData = async ()=>{
       try{
         const response = await axios.get(baseURL+'/dashboard/home/')
-        console.log(response)
+        // console.log(response)
         if(response.status == 200){
           setCounts(response.data)
         }
       }
       catch(error){
-        console.log(error)
+        // console.log(error)
       }
     }
     fetchData()
   },[])
 
-  console.log(counts)
+  // console.log(counts)
   return (
     <div className='flex '>
       <div className='w-64'>

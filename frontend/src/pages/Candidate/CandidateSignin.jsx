@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { SignupSchema,initialValues } from '../../validation/SignupValidation'
 import { GoogleLogin } from '@react-oauth/google';
+import { baseURL } from '../../components/Urls';
 
 
 function CandidateSignin({setIsSpinner}) {
@@ -19,19 +20,19 @@ function CandidateSignin({setIsSpinner}) {
     const [formError , setFormError] = useState('')
     const navigate = useNavigate();
     const dispatch =useDispatch();
-    const baseURL = 'http://127.0.0.1:8000/';
+    // const baseURL = 'http://127.0.0.1:8000/';
 
     const handleOnSubmit= async(values,{setSubmitting})=>{
-        console.log("inside handle on submit", values);
+        // console.log("inside handle on submit", values);
         const formData = new FormData();
         formData.append("full_name",values.username);
         formData.append("email",values.email);
         formData.append("password",values.password);
-        console.log("form data ...",formData)
+        // console.log("form data ...",formData)
         setIsSpinner(true)
         try{
-            const response = await axios.post(baseURL+'api/account/cand_register/',formData)
-            console.log("response...",response)
+            const response = await axios.post(baseURL+'/api/account/cand_register/',formData)
+            // console.log("response...",response)
             if (response.status ==200){
               toast.success('Registered successfull!',{
                 position: "top-center",
@@ -45,7 +46,7 @@ function CandidateSignin({setIsSpinner}) {
             }
         }
         catch(error){
-          console.log(error)
+          // console.log(error)
         }finally{
           setSubmitting(false)
         }
@@ -57,7 +58,7 @@ function CandidateSignin({setIsSpinner}) {
   //       client_id : userDetails,
   //     };
   //     try{
-  //         const response = await axios.post(baseURL+'api/account/auth/candidate/',formData)
+  //         const response = await axios.post(baseURL+'/api/account/auth/candidate/',formData)
   //         console.log("auth responce ",response)
   //         if(response.status==200){
          

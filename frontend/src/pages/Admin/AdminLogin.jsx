@@ -6,24 +6,25 @@ import { set_Authentication } from '../../Redux/Authentication/authenticationSli
 import {useNavigate} from 'react-router-dom'
 import {jwtDecode} from 'jwt-decode'
 import { useSelector} from "react-redux";
+import { baseURL } from '../../components/Urls';
 
 
 function AdminLogin() {
   const authentication_user = useSelector((state)=> state.authentication_user);
   const navigate = useNavigate();
   const dispatch =useDispatch();
-  const baseURL='http://127.0.0.1:8000/'
+  // const baseURL='http://127.0.0.1:8000/'
 
   const handleLoginSubmit = async(e)=>{
     e.preventDefault();
     const formData = new FormData();
     formData.append("email",e.target.email.value);
     formData.append("password",e.target.password.value);
-    console.log("stage two get login data......",formData)
+    // console.log("stage two get login data......",formData)
 
     try{
-      const responce = await axios.post(baseURL+'api/account/admin/login/',formData)
-      console.log("response.....................",responce)
+      const responce = await axios.post(baseURL+'/api/account/admin/login/',formData)
+      // console.log("response.....................",responce)
       if(responce.status==200){
         localStorage.setItem('access',responce.data.access_token)
         localStorage.setItem('refresh',responce.data.refresh_token)
@@ -45,7 +46,7 @@ function AdminLogin() {
       }
     }
     catch(error){
-      console.log("error")
+      // console.log("error")
     }
   } 
   useEffect(() => {

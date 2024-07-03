@@ -5,6 +5,7 @@ import JobCard from '../../components/candidate/utilities/JobCard';
 import NewsCard from '../../components/candidate/utilities/NewsCard';
 import SearchBox from '../../components/candidate/utilities/SearchBox';
 import Pagination from '../../components/candidate/utilities/Pagination';
+import { baseURL } from '../../components/Urls';
 
 function CandidateHome() {
   
@@ -12,7 +13,7 @@ function CandidateHome() {
     const [salaryRange, setSalaryRange] = useState(0);
     const [jobType,setJobType] =useState('')
     const [experienceType, setExperienceType] = useState('');
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access')
     const [jobData,setJobData] = useState([])
     const [filterData,setFilterData] = useState([])
@@ -20,7 +21,7 @@ function CandidateHome() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    console.log(token)
+    // console.log(token)
     useEffect(() => {
       const fetchJobData = async()=>{
         try{
@@ -31,7 +32,7 @@ function CandidateHome() {
               'Content-Type': 'multipart/form-data'
           }
           })
-          console.log(responce)
+          // console.log(responce)
           if(responce.status == 200){
             setJobData(responce.data)
           }
@@ -40,7 +41,7 @@ function CandidateHome() {
           }
         }
         catch(error){
-          console.log(error)
+          // console.log(error)
         }
       }
       fetchJobData();
@@ -55,8 +56,8 @@ function CandidateHome() {
   const currentJobs = action ? filterData.slice(indexOfFirstItem, indexOfLastItem) : jobData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil((action ? filterData.length : jobData.length) / itemsPerPage);
 
-  console.log("ufvuyfuyfuyfuyf",jobData)
-  console.log("filtered data.........",filterData)
+  // console.log("ufvuyfuyfuyfuyf",jobData)
+  // console.log("filtered data.........",filterData)
   return (
     <div className='flex'> 
       {/* filter side bar */}

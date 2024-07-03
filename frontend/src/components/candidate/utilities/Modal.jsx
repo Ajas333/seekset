@@ -4,10 +4,11 @@ import { Formik, Form, Field,ErrorMessage } from 'formik';
 import { ProfileEditSchema,EducationSchema } from '../../../validation/CandidateProfileValidation';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { baseURL } from '../../Urls';
 
 
 function Modal({setShowModal,section, modalData,userId,setAction,action}) {
-  const baseURL='http://127.0.0.1:8000/'
+  // const baseURL='http://127.0.0.1:8000/'
   const token = localStorage.getItem('access'); 
   const[data,setData] = useState([])
   const[skills,setSkills] = useState([])
@@ -27,7 +28,7 @@ function Modal({setShowModal,section, modalData,userId,setAction,action}) {
        }
      }
   const handlePersonal = async(values,{setSubmitting})=>{
-      console.log(values)
+      // console.log(values)
       const action ="personal"
       const formData = new FormData();
       formData.append("full_name",values.username);
@@ -43,7 +44,7 @@ function Modal({setShowModal,section, modalData,userId,setAction,action}) {
   }   
 
   const handleEducation = async(values,{setSubmitting})=>{
-    console.log(values)
+    // console.log(values)
     const action = "education"
     const formData = new FormData();
     formData.append("education",values.education);
@@ -79,7 +80,7 @@ function Modal({setShowModal,section, modalData,userId,setAction,action}) {
   };
 
   const handleInfoSubmit = () =>{
-    console.log(info)
+    // console.log(info)
     const action = "otherinfo"
     const formData = new FormData();
     formData.append("linkedin",info.linkedin || modalData.linkedin);
@@ -92,16 +93,16 @@ function Modal({setShowModal,section, modalData,userId,setAction,action}) {
     handleSubmit(formData)
   }
   const handleSubmit = async(formData)=>{
-        console.log(formData)
+        // console.log(formData)
       try{
-        const response = await axios.post(baseURL+'api/account/user/edit/',formData,{
+        const response = await axios.post(baseURL+'/api/account/user/edit/',formData,{
           headers:{
             'Authorization': `Bearer ${token}`,
             'Accept' : 'application/json',
             'Content-Type': 'multipart/form-data'
           }
         })
-        console.log(response)
+        // console.log(response)
         if(response.status == 200 ){
           toast.success(response.data.message,{
             position: "top-center",
@@ -111,7 +112,7 @@ function Modal({setShowModal,section, modalData,userId,setAction,action}) {
         }
       }
       catch(error){
-        console.log(error)
+        // console.log(error)
       }
   }
     useEffect(() => {

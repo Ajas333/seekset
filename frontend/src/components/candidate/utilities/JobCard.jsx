@@ -1,9 +1,10 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns';
+import { baseURL } from '../../Urls';
 
 function JobCard(props) {
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const image=`${baseURL}${props.img}`
     const formatDate = (datetime) => {
         const date = new Date(datetime);

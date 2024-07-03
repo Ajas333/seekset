@@ -5,6 +5,7 @@ import {Routes,Route,useNavigate} from 'react-router-dom'
 import CandidateLogin from '../../pages/Candidate/CandidateLogin'
 import CandidateSignin from '../../pages/Candidate/CandidateSignin'
 import ForgetPassword from '../../pages/Common/ForgetPassword'
+
 import CandidateHeader from './CandidateHeader'
 import Otp from '../../pages/Common/Otp'
 import ProfileCreation from '../../pages/Candidate/Profile/ProfileCreation'
@@ -22,13 +23,14 @@ import SavedJobs from '../../pages/Candidate/jobs/SavedJobs'
 import SheduledInterviews from '../../pages/Candidate/Interview/SheduledInterviews'
 import Message from '../../pages/Candidate/Message/Message'
 import Footer from '../Footer'
+import { baseURL } from '../Urls'
 
 
 
 
 function CandidateWrapper() {
   const navigate=useNavigate()
-  const baseURL='http://127.0.0.1:8000'
+  // const baseURL='http://127.0.0.1:8000'
   const token = localStorage.getItem('access'); 
   const dispatch =useDispatch()
   const authentication_user = useSelector(state => state.authentication_user);
@@ -62,7 +64,7 @@ function CandidateWrapper() {
           }
       }
       catch(error){
-        console.log(error)
+        // console.log(error)
       }
     }
     else{

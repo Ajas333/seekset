@@ -8,11 +8,12 @@ import { set_user_basic_details } from '../../../Redux/UserDetails/userBasicDeta
 import { Formik,Form,Field,ErrorMessage } from 'formik';
 import { ProfileValidationSchema,initialValues } from '../../../validation/EmployerProfileValidation';
 import ProfilepicModal from '../../../components/ProfilepicModal';
+import { baseURL } from '../../../components/Urls';
 
 
 
 function EmpProfileCreation() {
-    const baseURL='http://127.0.0.1:8000/'
+    // const baseURL='http://127.0.0.1:8000/'
     const token = localStorage.getItem('access'); 
     const authentication_user = useSelector(state => state.authentication_user);
     const navigate=useNavigate();
@@ -47,7 +48,7 @@ function EmpProfileCreation() {
           
           const base64Pattern = /^data:image\/(png|jpeg|jpg);base64,/;
         if (!base64Pattern.test(base64String)) {
-          console.error('Invalid base64 string');
+          // console.error('Invalid base64 string');
           return;
         }   
         const base64Content = base64String.replace(base64Pattern, '');
@@ -62,13 +63,13 @@ function EmpProfileCreation() {
         setProfilepic(file);
         };
         convertBase64ToImage(croppedImageUrl)
-        console.log("cropped image url............",croppedImageUrl)
+        // console.log("cropped image url............",croppedImageUrl)
       },[croppedImageUrl])
     
-    console.log(profile_pic)
+    // console.log(profile_pic)
 
     const handleSubmit = async (values,{setSubmitting}) =>{
-        console.log(values)
+        // console.log(values)
         const formData = new FormData()
         formData.append("email",authentication_user.email),
         formData.append("phone",values.phone)
@@ -84,7 +85,7 @@ function EmpProfileCreation() {
             formData.append("profile_pic", profile_pic);
           }
         try{
-            const response = await axios.post(baseURL+'api/account/user/emp_profile_creation/',formData,{
+            const response = await axios.post(baseURL+'/api/account/user/emp_profile_creation/',formData,{
                 headers:{
 
                         'Authorization': `Bearer ${token}`,
@@ -93,7 +94,7 @@ function EmpProfileCreation() {
                     }
                 })
 
-            console.log(response)
+            // console.log(response)
             if(response.status==200){
                 dispatch(
                   set_user_basic_details({
@@ -104,7 +105,7 @@ function EmpProfileCreation() {
               }
             }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }finally{
           setSubmitting(false)
         }

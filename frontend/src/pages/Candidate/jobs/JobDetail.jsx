@@ -8,11 +8,12 @@ import { MdDateRange } from "react-icons/md";
 import { formatDistanceToNow } from 'date-fns';
 import Swal from 'sweetalert2'
 import QModal from '../../../components/candidate/utilities/QModal';
+import { baseURL } from '../../../components/Urls';
 
 
 
 function JobDetail() {
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access')
    
     const { jobId } = useParams();
@@ -22,7 +23,7 @@ function JobDetail() {
     const [isSaved, setIsSaved] = useState(false);
     const [modal,setModal] = useState(false)
     const [userid,setUserid] = useState(null)
-    console.log(isSaved)
+    // console.log(isSaved)
 
     useEffect(() => {
       const get_user_id = async () => {
@@ -34,12 +35,12 @@ function JobDetail() {
                       'Content-Type': 'multipart/form-data'
                   }
               });
-              console.log("current user response:", response);
+              // console.log("current user response:", response);
               if (response.status === 200) {
                   setUserid(response.data.id);
               }
           } catch (error) {
-              console.log(error);
+              // console.log(error);
           }
       };
       get_user_id();
@@ -56,14 +57,14 @@ function JobDetail() {
             }
           });
           
-          console.log("inside job details page",responce)
+          // console.log("inside job details page",responce)
           if(responce.status==200){
             setJobData(responce.data)
             // fetchQuestions()
           }   
         }
         catch(error){
-          console.log(error)
+          // console.log(error)
         }
       }
       fetchJobData()
@@ -103,19 +104,19 @@ function JobDetail() {
             'Content-Type': 'multipart/form-data'
         }
         });
-        console.log(responce)
+        // console.log(responce)
         if (responce.status === 200 || responce.status === 201) {
           setIsSaved(!isSaved); 
         }
       }
       catch(error){
-        console.log(error)
+        // console.log(error)
       }
     }
 
    
 
-    console.log(token)
+    // console.log(token)
     
     // const handleApply = async ()=>{
     //   try{  
@@ -152,10 +153,10 @@ function JobDetail() {
     // }
 
     const handleApply = async()=>{
-      console.log("helloooooooooooooooooooooo")
+      // console.log("helloooooooooooooooooooooo")
       try{
           const responce = await axios.post(`${baseURL}/api/empjob/applyjob/${jobId}/`,{userid});
-        console.log(responce)
+        // console.log(responce)
         if(responce.status == 200 || responce.status == 201){
                 setModal(false)
                 Swal.fire({
@@ -168,11 +169,11 @@ function JobDetail() {
               }
       }
       catch(error){
-        console.log(error)
+        // console.log(error)
       }
     }
-    console.log("...................................................",questions)
-    console.log("userid...........................",userid)
+    // console.log("...................................................",questions)
+    // console.log("userid...........................",userid)
   return (
     <div className='mt-16'>
       <div className='flex items-center flex-col gap-2'>

@@ -14,6 +14,7 @@ import ProfilepicModal from "../../../components/ProfilepicModal";
 import axios from "axios"
 import {useDispatch} from 'react-redux'
 import { set_user_basic_details } from "../../../Redux/UserDetails/userBasicDetailsSlice";
+import { baseURL } from "../../../components/Urls";
 
 
 function Profile() {
@@ -32,7 +33,7 @@ function Profile() {
   const [profile_pic, setProfilepic] = useState(null);
   const [imgError,setImgError] = useState('')
 
-  const baseURL='http://127.0.0.1:8000'
+  // const baseURL='http://127.0.0.1:8000'
   const token = localStorage.getItem('access')
   const[profileData,setProfileData] = useState([])
   const[eduData,setEduData] = useState([])
@@ -49,15 +50,15 @@ function Profile() {
                 'Content-Type': 'multipart/form-data'
             }
             })
-            console.log("profile data............",response.data)
+            // console.log("profile data............",response.data)
             if(response.status == 200){
               setProfileData(response.data.data)
               setEduData(response.data.data.education)                            
-              console.log("modal triggerer",modal)
+              // console.log("modal triggerer",modal)
             }
         }
         catch(error){
-          console.log(error)
+          // console.log(error)
         }
     }
     fetchData()
@@ -66,7 +67,7 @@ function Profile() {
   useEffect(() => {
     if (profileData?.skills) {
       const value = profileData.skills.split(',');
-      console.log(value)
+      // console.log(value)
       setSkills(value);
     } else {
       setSkills([]); 
@@ -81,8 +82,8 @@ function Profile() {
   
   const handleDelete = async(data)=>{
     const actiondata = "educationDelete"
-    console.log("hellllllllllooooooooooo")
-    console.log("education dataa",data)
+    // console.log("hellllllllllooooooooooo")
+    // console.log("education dataa",data)
     const formData = new FormData();
     formData.append("eduId",data.id);
     formData.append("action",actiondata)
@@ -99,7 +100,7 @@ function Profile() {
           'Content-Type': 'multipart/form-data'
         } 
       })
-      console.log(response)
+      // console.log(response)
       if(response.status == 200 ){
           try{
             const responce = await axios.get(baseURL+'/api/account/user/details',{
@@ -118,7 +119,7 @@ function Profile() {
               }
            }
         catch(error){
-          console.log(error)
+          // console.log(error)
         }
         
         toast.success(response.data.message,{
@@ -128,7 +129,7 @@ function Profile() {
       }
     }
     catch(error){
-      console.log(error)
+      // console.log(error)
     }
   }
       
@@ -160,7 +161,7 @@ function Profile() {
       
       const base64Pattern = /^data:image\/(png|jpeg|jpg);base64,/;
     if (!base64Pattern.test(base64String)) {
-      console.error('Invalid base64 string');
+      // console.error('Invalid base64 string');
       return;
     }   
     const base64Content = base64String.replace(base64Pattern, '');
@@ -175,11 +176,11 @@ function Profile() {
     setProfilepic(file);
     };
     convertBase64ToImage(croppedImageUrl)
-    console.log("cropped image url............",croppedImageUrl)
+    // console.log("cropped image url............",croppedImageUrl)
   },[croppedImageUrl])
 
   useEffect(()=>{
-    console.log("profilepic after uploading",profile_pic)
+    // console.log("profilepic after uploading",profile_pic)
     const actionPicData = "profilepic"
     const formData = new FormData();
     formData.append("profile_pic",profile_pic)
@@ -189,10 +190,10 @@ function Profile() {
     
   },[profile_pic])
 
-  console.log("sedrftgyhuji",profileData)
-  console.log(profileData.resume)
-  console.log("852967485",eduData)
-  console.log("skilsssssssss",skills)
+  // console.log("sedrftgyhuji",profileData)
+  // console.log(profileData.resume)
+  // console.log("852967485",eduData)
+  // console.log("skilsssssssss",skills)
   return (
     <div className="pt-12 ">
 

@@ -2,16 +2,17 @@ import axios from 'axios';
 import React, { useRef, useState,useEffect } from 'react'
 import { toast } from 'react-toastify';
 import { IoMdClose } from "react-icons/io";
+import { baseURL } from '../../Urls';
 
 function AcceptRejectModal({setModal,modalData,setAction,action}) {
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const  modalRef = useRef();
     const closeModal =(e)=>{
       if(modalRef.current === e.target){
         setModal();
          }
        }
-       console.log("modl data",modalData)
+      //  console.log("modl data",modalData)
     
     const handleAccept = ()=>{
      const action = "accept"
@@ -34,7 +35,7 @@ function AcceptRejectModal({setModal,modalData,setAction,action}) {
         formData.append("action",action)
         try{
             const response = await axios.post(baseURL+'/api/interview/status/',formData)
-            console.log("responce........",response)
+            // console.log("responce........",response)
             if (response.status == 200){
               toast.success(response.data.message,{
                 position: "top-center",
@@ -50,7 +51,7 @@ function AcceptRejectModal({setModal,modalData,setAction,action}) {
             }
         }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }
     }
 

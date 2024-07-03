@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import { Formik,Field,Form,ErrorMessage } from 'formik';
 import { ResetPasswordSchema,initialValues } from '../../validation/ResetPassValidation';
 import { toast } from 'react-toastify';
+import { baseURL } from '../../components/Urls';
 
 
 
@@ -14,7 +15,7 @@ function ResetPassword() {
     const [password,setPassword]=useState('')
     const [confpassword,setConfpassword] =useState('')
     const [formError,setFormError]=useState('')
-    const baseURL='http://127.0.0.1:8000/'
+    // const baseURL='http://127.0.0.1:8000/'
     const navigate=useNavigate()
 
     useEffect(() => {
@@ -32,8 +33,8 @@ function ResetPassword() {
         formData.append('password',values.password)
         formData.append('id',id) 
         try{
-            const response = await axios.post(baseURL+'api/account/reset_password/', formData);
-            console.log(response)
+            const response = await axios.post(baseURL+'/api/account/reset_password/', formData);
+            // console.log(response)
         if(response.status ==200){
             setFormError('')
             toast.success('Login successful!',{

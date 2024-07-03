@@ -2,9 +2,10 @@ import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import JobCard from '../../../components/candidate/utilities/JobCard'
+import { baseURL } from '../../../components/Urls'
 
 function SavedJobs() {
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access'); 
     const [jobdata,setJobData] = useState([]);
     useEffect(()=>{
@@ -17,7 +18,7 @@ function SavedJobs() {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
-                console.log("saved jobs details.....",responce)
+                // console.log("saved jobs details.....",responce)
                 if(responce.status == 200){
                     setJobData(responce.data.data)
                 }
@@ -26,12 +27,12 @@ function SavedJobs() {
                 }
             }
             catch(error){
-                console.log(error)
+                // console.log(error)
             }
         }
         fetchData();
     },[])
-    console.log("zwxecrtvybuni",jobdata)
+    // console.log("zwxecrtvybuni",jobdata)
   return (
     <div className='pt-12 min-h-[25rem]'>
         <div className='flex justify-center' >

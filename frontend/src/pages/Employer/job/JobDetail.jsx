@@ -4,10 +4,11 @@ import { Link,useParams } from 'react-router-dom'
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import JobDetailMOdal from '../../../components/employer/utilities/JobDetailMOdal';
+import { baseURL } from '../../../components/Urls';
 
 
 function JobDetail() {
-  const baseURL='http://127.0.0.1:8000/'
+  // const baseURL='http://127.0.0.1:8000/'
   const token = localStorage.getItem('access')
   const [jobData,setJobData]=useState({});
   const { jobId } = useParams();
@@ -17,7 +18,7 @@ function JobDetail() {
   useEffect(() => {
     const fetchJobData = async () => {
       try{
-        const responce = await axios.get(`${baseURL}api/empjob/getjobs/detail/${jobId}/`,{
+        const responce = await axios.get(`${baseURL}/api/empjob/getjobs/detail/${jobId}/`,{
           headers:{
             'Authorization': `Bearer ${token}`,
             'Accept' : 'application/json',
@@ -25,27 +26,27 @@ function JobDetail() {
         }
         });
 
-        console.log(responce)
+        // console.log(responce)
         if(responce.status==200){
           setJobData(responce.data)
           setStatus(responce.data.active)
         }   
       }
       catch(error){
-        console.log(error)
+        // console.log(error)
       }
     }
     fetchJobData()
   }, [])
 
-  console.log(jobData)
-  console.log(token)
-  console.log(jobData.active)
-  console.log("status",status)
+  // console.log(jobData)
+  // console.log(token)
+  // console.log(jobData.active)
+  // console.log("status",status)
   
   const handleJobStatusChange = async (action)=>{
     try{
-      const responce = await axios.post(`${baseURL}api/empjob/getjobs/status/${jobId}/`,{action},{
+      const responce = await axios.post(`${baseURL}/api/empjob/getjobs/status/${jobId}/`,{action},{
         headers:{
           'Authorization': `Bearer ${token}`,
           'Accept' : 'application/json',
@@ -60,10 +61,10 @@ function JobDetail() {
           setStatus(true)
         }
       }
-      console.log(responce)
+      // console.log(responce)
     }
     catch(error){
-      console.log(error)
+      // console.log(error)
     }
   }
 

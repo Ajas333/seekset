@@ -11,23 +11,23 @@ import { SignupSchema, initialValues } from '../../validation/SignupValidation';
 import { GoogleLogin } from '@react-oauth/google';
 import { set_Authentication } from '../../Redux/Authentication/authenticationSlice';
 import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice';
-
+import { baseURL } from '../../components/Urls';
 
 
 function EmpSignup({setIsSpinner}) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [formError, setFormError] = useState('');
-    const baseURL = 'http://127.0.0.1:8000/';
+    // const baseURL = 'http://127.0.0.1:8000/';
     const handleOnSubmit = async (values, { setSubmitting }) => {
-        console.log("inside handle on submit", values);
+        // console.log("inside handle on submit", values);
         const formData = new FormData();
         formData.append("full_name", values.username);
         formData.append("email", values.email);
         formData.append("password", values.password);
         setIsSpinner(true)
         try {
-            const response = await axios.post(baseURL + 'api/account/emp_register/', formData);
+            const response = await axios.post(baseURL + '/api/account/emp_register/', formData);
             if (response.status === 200) {
                 toast.success('Registered successfull!',{
                     position: "top-center",
@@ -44,7 +44,7 @@ function EmpSignup({setIsSpinner}) {
                 navigate('/login')
             }
         } catch (error) {
-            console.error("There was an error!", error);
+            // console.error("There was an error!", error);
         } finally {
             setSubmitting(false);
         }
@@ -55,7 +55,7 @@ function EmpSignup({setIsSpinner}) {
     //         id_token: userDetails.id_token, // Ensure this key matches the backend expectation
     //     };
     //     try {
-    //         const response = await axios.post(baseURL + 'api/account/auth/employer/', formData);
+    //         const response = await axios.post(baseURL + '/api/account/auth/employer/', formData);
     //         console.log("auth response", response);
     //         if (response.status === 200) {
     //             localStorage.setItem('access', response.data.access_token);

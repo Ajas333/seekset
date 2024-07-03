@@ -57,10 +57,7 @@ function AdminHeader() {
         </div>
         <div className='flex gap-7 px-3'>
             
-            {/* <div className='flex flex-col justify-center items-center'>
-                
-                <p className='text-xs font-medium text-gray-500'>Notification</p>
-            </div> */}
+           
             <div className='flex flex-col justify-center items-center '>
              
               <Dropdown menu={{items,}}>

@@ -2,18 +2,19 @@ import React, { useState,useEffect } from 'react'
 import SideBar from '../../components/employer/SideBar'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { baseURL } from '../../components/Urls'
 
 
 function EmpHome() {
   const [jobData, setJobData] = useState([])
-  const baseURL='http://127.0.0.1:8000/'
+  // const baseURL='http://127.0.0.1:8000/'
   const token = localStorage.getItem('access')
   const [isJob,setIsJob] = useState(false)
 
   useEffect(() => {
    const fetchJobDetails = async ()=>{
     try{
-      const responce = await axios.get(baseURL+'api/empjob/getjobs/',{
+      const responce = await axios.get(baseURL+'/api/empjob/getjobs/',{
         headers:{
           'Authorization': `Bearer ${token}`,
           
@@ -21,17 +22,17 @@ function EmpHome() {
           'Content-Type': 'multipart/form-data'
       }
       })
-      console.log(responce)
+      // console.log(responce)
       if(responce.status == 200){
         setJobData(responce.data.data)
-        console.log("job data",jobData)
+        // console.log("job data",jobData)
       }
       else{
 
       }
     }
     catch(error){
-      console.log("something went wrond",error)
+      // console.log("something went wrond",error)
     }
    };
 

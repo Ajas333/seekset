@@ -11,26 +11,27 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { LoginSchema,initialValues } from '../../validation/LoginValidation';
 import { toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google';
+import { baseURL } from '../../components/Urls';
 
 function EmpLogin() {
   const authentication_user = useSelector((state)=> state.authentication_user);
   const [formError, setFormError] = useState('');
   const navigate = useNavigate();
   const dispatch =useDispatch();
-  const baseURL='http://127.0.0.1:8000/'
+  // const baseURL='http://127.0.0.1:8000/'
   const [userId,setUserId] = useState(null)
 
 
   const handleLoginSubmit = async(values,{setSubmitting})=>{
-   console.log("values inside on submit",values)
+  //  console.log("values inside on submit",values)
     const formData = new FormData();
     formData.append("email",values.email);
     formData.append("password",values.password);
-    console.log("stage two get login data......",formData)
+    // console.log("stage two get login data......",formData)
 
     try{
-      const responce = await axios.post(baseURL+'api/account/Emplogin/',formData)
-      console.log("login response.......................................................",responce)
+      const responce = await axios.post(baseURL+'/api/account/Emplogin/',formData)
+      // console.log("login response.......................................................",responce)
       if(responce.status==200){
          
         localStorage.setItem('access',responce.data.access_token)
@@ -64,13 +65,13 @@ function EmpLogin() {
         }
         }
         else {
-          console.log("responce...............................",responce)
+          // console.log("responce...............................",responce)
           setFormError(responce.data.message)
         }
       }
 
     catch(error){
-      console.log("error")
+      // console.log("error")
     } finally{
       setSubmitting(false);
     }
@@ -82,7 +83,7 @@ function EmpLogin() {
   //       client_id : userDetails,
   //     };
   //     try{
-  //         const response = await axios.post(baseURL+'api/account/auth/employer/',formData)
+  //         const response = await axios.post(baseURL+'/api/account/auth/employer/',formData)
   //         console.log("auth responce ",response)
   //         if(response.status==200){
          

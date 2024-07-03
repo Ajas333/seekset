@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {Link} from 'react-router-dom'
 import StatusJob from '../../../components/candidate/utilities/StatusJob';
+import { baseURL } from '../../../components/Urls';
 
 function ApplyedJob() {
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access')
     const navigate=useNavigate();   
     const authentication_user = useSelector((state)=> state.authentication_user);
@@ -23,7 +24,7 @@ function ApplyedJob() {
                           'Content-Type': 'multipart/form-data'
                       }
                       })
-                      console.log("responvce from backend job data",responce)
+                    //   console.log("responvce from backend job data",responce)
                       if(responce.status == 200){
                         setJobData(responce.data)
                         setSelectedJob(responce.data[0]);
@@ -33,7 +34,7 @@ function ApplyedJob() {
                       }
                 }
                 catch(error){
-                    console.log(error)
+                    // console.log(error)
                 }
             }
             fetchApplyedJobs();
@@ -46,8 +47,8 @@ function ApplyedJob() {
     const handleJobClick = (job) => {
         setSelectedJob(job);
       };
-    console.log("job data",jobData)
-    console.log("current job data",selectedJob)
+    // console.log("job data",jobData)
+    // console.log("current job data",selectedJob)
   return (
     <div className='mt-14'>
       <div className='flex gap-3'>

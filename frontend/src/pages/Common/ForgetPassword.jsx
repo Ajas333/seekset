@@ -5,10 +5,11 @@ import axios from 'axios';
 import Swal from 'sweetalert2'
 import Spinner from './Spinner';
 import { toast } from 'react-toastify';
+import { baseURL } from '../../components/Urls';
 
 function ForgetPassword() {
   const [formError,setFormError]=useState('')
-  const baseURL='http://127.0.0.1:8000/'
+  // const baseURL='http://127.0.0.1:8000/'
   const navigate = useNavigate();
   const [isSpinner,setIsSpiner] = useState(false)
   const handleSubmit = async (e)=>{
@@ -17,8 +18,8 @@ function ForgetPassword() {
     formData.append("email",e.target.email.value);
     setIsSpiner(true)
     try{
-      const responce = await axios.post(baseURL+'api/account/forgot_pass/',formData)
-      console.log(responce)
+      const responce = await axios.post(baseURL+'/api/account/forgot_pass/',formData)
+      // console.log(responce)
       if(responce.status === 200){
         setFormError('')
         toast.success('Password reset link send to email!',{
@@ -32,7 +33,7 @@ function ForgetPassword() {
       }
     }
     catch(error){
-      console.log(error)
+      // console.log(error)
     }
   }
   

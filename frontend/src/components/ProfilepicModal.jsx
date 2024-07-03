@@ -64,7 +64,7 @@ function ProfilepicModal({setCroppedImageUrl,setImgError, setImageUrl, imageUrl,
                         convertToPixelCrop(crop,imgRef.current.width,imgRef.current.height)
                      )
                      const dataUrl = previewCanvasRef.current.toDataURL()
-                     console.log("inside profile edit modal",dataUrl);
+                    // console.log("inside profile edit modal",dataUrl);
                      setCroppedImageUrl(dataUrl);
                      closeModal();
                     }}

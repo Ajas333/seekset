@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import Sidebar from '../../components/admin/Utilities/Sidebar'
 import axios from 'axios';
+import { baseURL } from '../../components/Urls';
 
 function Cdetails() {
     const { id } = useParams(); 
-    const baseURL = "http://127.0.0.1:8000";
+    // const baseURL = "http://127.0.0.1:8000";
     const [candidate, setCandidate] = useState(null);
     const [render,setRender] = useState(false)
 
@@ -13,20 +14,20 @@ function Cdetails() {
        const fetchData = async()=>{
         try{
             const response = await axios.get(`${baseURL}/dashboard/candidate/${id}`)
-            console.log(response)
+            // console.log(response)
             if (response.status === 200) {
                 setCandidate(response.data);
               }
         }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }
        }
        fetchData()
     }, [render])
 
     const handleStatus = async(action)=>{
-      console.log(action)
+      // console.log(action)
       const formData = new FormData()
       formData.append("id",candidate.id);
       formData.append("action",action);
@@ -37,7 +38,7 @@ function Cdetails() {
         }
       }
       catch(error){
-        console.log(error)
+        // console.log(error)
       }
 
     }

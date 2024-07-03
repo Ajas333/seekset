@@ -20,7 +20,7 @@ function Qmodal({setModal,setQuestions,questions,handleformSubmit}) {
       };
       const handleSubmit = (event) => {
         event.preventDefault();
-        console.log('Questions:', questions);
+        // console.log('Questions:', questions);
         handleformSubmit();
       };
 

@@ -5,11 +5,12 @@ import {Formik,Form,Field,ErrorMessage} from 'formik';
 import { SheduleValidationSchema,initialValues } from '../../../validation/SheduleValidation';
 import { toast } from 'react-toastify';
 import Spinner from '../../../pages/Common/Spinner';
+import { baseURL } from '../../Urls';
 
 
 function SheduleModal({setModal,candidate_id,job_id,changeStatus,setAppStatus}) {
     const [isSpinner,setIsSpinner] = useState(false)
-    const baseURL='http://127.0.0.1:8000/'
+    // const baseURL='http://127.0.0.1:8000/'
     const token = localStorage.getItem('access')
     const  modalRef = useRef();
     const closeModal =(e)=>{
@@ -46,23 +47,23 @@ function SheduleModal({setModal,candidate_id,job_id,changeStatus,setAppStatus}) 
     //     }
     // }
     const handleSubmit = async(values) =>{
-        console.log(values)
+        // console.log(values)
         const formData = new FormData()
             formData.append("date",values.date)
             formData.append("candidate",candidate_id)
             formData.append("job",job_id)
             
-            console.log(formData)
+            // console.log(formData)
             setIsSpinner(true)
             try{
-                 const responce = await axios.post(`${baseURL}api/interview/shedule/`,formData,{
+                 const responce = await axios.post(`${baseURL}/api/interview/shedule/`,formData,{
                     headers:{
                         'Authorization': `Bearer ${token}`,
                         'Accept' : 'application/json',
                         'Content-Type': 'multipart/form-data'
                       }
                  })
-                 console.log(responce)
+                //  console.log(responce)
                  if(responce.status==201){
                     toast.success('Sheduled successfull!',{
                       position: "top-center",
@@ -74,7 +75,7 @@ function SheduleModal({setModal,candidate_id,job_id,changeStatus,setAppStatus}) 
                  }
             }
             catch(error){
-                console.log(error)
+                // console.log(error)
             }
       }
 

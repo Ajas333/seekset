@@ -1,11 +1,12 @@
 import React, { useRef, useState,useEffect } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { IoSend } from "react-icons/io5";
+import { baseURL } from '../../Urls';
 
 function ChatModal({candidate_name,profile_pic,userName,setChat,candidate_id,employer_id}) {
 
       const  modalRef = useRef();
-      const baseURL='http://127.0.0.1:8000/'
+      // const baseURL='http://127.0.0.1:8000/'
       const [chatMessages, setChatMessages] = useState([]);
       const [client, setClient] = useState(null); 
       const [message, setMessage] = useState("");
@@ -20,24 +21,24 @@ function ChatModal({candidate_name,profile_pic,userName,setChat,candidate_id,emp
         }
 
         useEffect(()=>{
-            console.log("hellllllllllllllloooooooooooooooooooooooooooooo")
+            // console.log("hellllllllllllllloooooooooooooooooooooooooooooo")
             const connectToWebSocket =(candidate_id,employer_id) =>{
               if(!candidate_id || !employer_id) return ;
               
               const newClint = new W3CWebSocket(
-                  `${baseURL}ws/chat/${candidate_id}/${employer_id}/${user_id}`
+                  `${baseURL}/ws/chat/${candidate_id}/${employer_id}/${user_id}`
               );
               setClient(newClint);
               newClint.onopen = () => {
-                  console.log("WebSocket Client Connected");
+                  // console.log("WebSocket Client Connected");
       
                 };
                 newClint.onmessage = (message) => {
-                  console.log("ayyooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+                  // console.log("ayyooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                   const data = JSON.parse(message.data);
                   setChatMessages((prevMessages) => [...prevMessages, data]);
               };
-              console.log("set chat messages from websocket",chatMessages)          
+              // console.log("set chat messages from websocket",chatMessages)          
                 return () => {
                     newClint.close();
                     };                
@@ -48,14 +49,14 @@ function ChatModal({candidate_name,profile_pic,userName,setChat,candidate_id,emp
 
         const sendMessage = ()=>{
             if (!client || client.readyState !== client.OPEN) {
-                console.error("WebSocket is not open");
+                // console.error("WebSocket is not open");
                 return;
               }
               const sendername = candidate_name
-              console.log("SENDER NAME:", sendername);
+              // console.log("SENDER NAME:", sendername);
               const messageData = { message, sendername };
               const messageString = JSON.stringify(messageData);
-              console.log("Sending Message:", messageString);
+              // console.log("Sending Message:", messageString);
               client.send(messageString);
               setMessage("");
         }

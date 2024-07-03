@@ -4,6 +4,7 @@ import { useNavigate,Link } from 'react-router-dom'
 import ApplyCard from '../../../components/employer/utilities/ApplyCard'
 import CandidateView from './CandidateView'
 import SideBar from '../../../components/employer/SideBar'
+import { baseURL } from '../../../components/Urls'
 
 
 function Applications() {
@@ -13,20 +14,20 @@ function Applications() {
     const [current,setCurrent] = useState(null)
     const [status,setStatus] = useState('')
     const [questions,setQuestions] = useState([])
-    const baseURL='http://127.0.0.1:8000/'
+    // const baseURL='http://127.0.0.1:8000/'
     const token = localStorage.getItem('access')
 
     useEffect(() => {
         const fetchJobDetails = async ()=>{
          try{
-           const responce = await axios.get(baseURL+'api/empjob/getApplicationjobs/',{
+           const responce = await axios.get(baseURL+'/api/empjob/getApplicationjobs/',{
              headers:{
                'Authorization': `Bearer ${token}`,
                'Accept' : 'application/json',
                'Content-Type': 'multipart/form-data'
            }
            })
-           console.log("applications page........",responce)
+        //    console.log("applications page........",responce)
            if(responce.status == 200){
              setJobData(responce.data.data)
              setSelectedJob(responce.data.data[0]);
@@ -40,7 +41,7 @@ function Applications() {
             }
         }
         catch(error){
-            console.log("something went wrond",error)
+            // console.log("something went wrond",error)
         }
     };
     
@@ -54,7 +55,7 @@ const formatDate = (dateTimeString) => {
     return new Date(dateTimeString).toLocaleDateString(undefined, options);
 }
 
-console.log("job data",jobData)
+// console.log("job data",jobData)
 
 const handleJobClick =(job)=>{
     setSelectedJob(job);
@@ -65,12 +66,12 @@ const handleJobClick =(job)=>{
     else{
         setQuestions([])
     }
-   console.log("jobbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",job)
+//    console.log("jobbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",job)
 }
 
-console.log("selected jobs.......",selectedJob)
-console.log("current candidatemigkjg",current)
-console.log("questionsssssssssssssssss",questions)
+// console.log("selected jobs.......",selectedJob)
+// console.log("current candidatemigkjg",current)
+// console.log("questionsssssssssssssssss",questions)
 return (
     <div className=' flex pt-12'>
         <div>

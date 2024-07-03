@@ -15,39 +15,16 @@ import { set_Authentication } from '../../Redux/Authentication/authenticationSli
 
 
 function SideBar() {
-  const baseURL='http://127.0.0.1:8000/'
+  
   const token = localStorage.getItem('access')
   const userBasicDetails = useSelector((state)=>state.user_basic_details)
   const user_id = userBasicDetails.user_type_id
   const navigate=useNavigate();
   const dispatch=useDispatch();
   const authentication_user = useSelector((state)=> state.authentication_user);
-  console.log("user_id........................",user_id)
+  // console.log("user_id........................",user_id)
 
-  // useEffect(()=>{
-  //     const connectToWebSocket =(user_id) =>{
-  //   if(!user_id) return;
-
-  //   const messageNotificationSocket = new W3CWebSocket(
-  //     `${baseURL}ws/notifications/${user_id}/`
-  //   );
-
-  //   messageNotificationSocket.onopen = () => {
-  //     console.log('Notification socket connected');
-  //   };
-
-  //   messageNotificationSocket.onmessage = function(e) {
-  //     const data = JSON.parse(e.data);
-  //     const unreadCount = data.unread_count;
-  //     console.log("unread message count....................................",unreadCount)
-  //   };
-  //     messageNotificationSocket.onclose = function(e) {
-  //       console.error('Notification socket closed unexpectedly');
-  //   };
-  // };
-
-  // connectToWebSocket(user_id);
-  // },[])
+  
 
   const handleLogout = ()=>{
     localStorage.clear();

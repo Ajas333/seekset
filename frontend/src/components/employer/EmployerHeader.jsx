@@ -8,11 +8,12 @@ import { MdOutlineMessage } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { set_Authentication } from '../../Redux/Authentication/authenticationSlice';
+import { baseURL } from '../Urls';
 
 function EmployerHeader() {
   const authentication_user = useSelector((state)=> state.authentication_user);
   const userBasicDetails = useSelector((state)=>state.user_basic_details);
-  const baseURL='http://127.0.0.1:8000'
+  // const baseURL='http://127.0.0.1:8000'
   const profile_image=`${baseURL}${userBasicDetails.profile_pic}`
   
   const navigate=useNavigate();

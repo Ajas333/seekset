@@ -13,7 +13,7 @@ function SearchBox({jobData,setFilterData,setAction}) {
         setInfo({
             ...info,[name]:value
         })
-        console.log(info)
+        // console.log(info)
     }
 
     const handleSearch = () =>{
@@ -23,7 +23,7 @@ function SearchBox({jobData,setFilterData,setAction}) {
         filtered = filtered.filter(job => job.title.toLowerCase().includes(titleLower));
        }
        if (info.location){
-        console.log("cvtbyunimo,p")
+        // console.log("cvtbyunimo,p")
         const locationLower = info.location.toLowerCase();
         filtered = filtered.filter(job => job.location.toLowerCase().includes(locationLower));
        }

@@ -19,10 +19,10 @@ function Filter(props) {
       };
 
       const handleFilter = ()=>{
-          console.log(props.dateRange,props.salaryRange,props.jobType,props.experienceType)
+          // console.log(props.dateRange,props.salaryRange,props.jobType,props.experienceType)
 
           let filtered = props.jobData;
-          console.log(filtered)
+          // console.log(filtered)
           if (props.dateRange) {
             const now = new Date();
             let startDate;
@@ -54,14 +54,14 @@ function Filter(props) {
             const minSalary = Number(props.salaryRange);
             filtered = filtered.filter(job => {
                 const [jobMinSalary, jobMaxSalary] = job.lpa.split('-').map(Number);
-                console.log(jobMinSalary,jobMaxSalary)
+                // console.log(jobMinSalary,jobMaxSalary)
                 return minSalary <= (jobMinSalary * 100000)/12;
             });
         }
 
           // Job type filter
           if (props.jobType) {
-            console.log("drftbyunjik",filtered,props.jobType)
+            // console.log("drftbyunjik",filtered,props.jobType)
               filtered = filtered.filter(job => job.jobtype === props.jobType);
           }
 
@@ -69,7 +69,7 @@ function Filter(props) {
           if (props.experienceType) {
               filtered = filtered.filter(job => job.experiance === props.experienceType);
           }
-          console.log("filtered job",filtered)
+          // console.log("filtered job",filtered)
           props.setFilterData(filtered)
           props.setAction(true)
         }

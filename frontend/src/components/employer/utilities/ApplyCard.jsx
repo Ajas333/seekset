@@ -1,17 +1,18 @@
 import React,{useState,useEffect} from 'react'
 import {Link} from 'react-router-dom'
+import { baseURL } from '../../Urls'
 
 function ApplyCard({selectedJob,setChange,setCurrent,setStatus}) {
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const [applications,setApplications]=useState([])
-    console.log("inside Apply card",selectedJob)
+    // console.log("inside Apply card",selectedJob)
     useEffect(() => {
        if(selectedJob){
         setApplications(selectedJob.applications)
        }
     }, [selectedJob])
-    console.log("applications....",applications)
-    console.log("selected jobsssssssssssssssssssssssss",selectedJob)
+    // console.log("applications....",applications)
+    // console.log("selected jobsssssssssssssssssssssssss",selectedJob)
     const handleClick =(data)=>{
         setChange(false)
         setCurrent(data);

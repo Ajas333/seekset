@@ -1,7 +1,8 @@
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
+import { baseURL } from "../components/Urls";
 
-const baseURL = "http://127.0.0.1:8000";
+// const baseURL = "http://127.0.0.1:8000";
 
 const updateAdminToken = async () => {
   const refreshToken = localStorage.getItem("refresh");

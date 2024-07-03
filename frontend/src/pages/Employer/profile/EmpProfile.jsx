@@ -16,9 +16,7 @@ import { set_user_basic_details } from "../../../Redux/UserDetails/userBasicDeta
 import Modal from '../../../components/employer/utilities/Modal';
 import ProfilepicModal from '../../../components/ProfilepicModal';
 import RoleModal from '../../../components/employer/utilities/RoleModal';
-
-
-
+import { baseURL } from '../../../components/Urls';
 
 
 function EmpProfile() {
@@ -26,7 +24,7 @@ function EmpProfile() {
   const [section,setSection] =useState("")
   const [action,setAction] = useState(false)
   const [profileData,setProfileData] = useState([])
-  const baseURL='http://127.0.0.1:8000'
+  // const baseURL='http://127.0.0.1:8000'
   const token = localStorage.getItem('access')
   const dispatch =useDispatch();
   const fileInputRef = useRef(null);
@@ -65,7 +63,7 @@ function EmpProfile() {
       
       const base64Pattern = /^data:image\/(png|jpeg|jpg);base64,/;
     if (!base64Pattern.test(base64String)) {
-      console.error('Invalid base64 string');
+      // console.error('Invalid base64 string');
       return;
     }   
     const base64Content = base64String.replace(base64Pattern, '');
@@ -80,7 +78,7 @@ function EmpProfile() {
     setProfilepic(file);
     };
     convertBase64ToImage(croppedImageUrl)
-    console.log("cropped image url............",croppedImageUrl)
+    // console.log("cropped image url............",croppedImageUrl)
   },[croppedImageUrl])
 
   const handleCropSubmit = (croppedUrl) => {
@@ -89,7 +87,7 @@ function EmpProfile() {
   };
 
   useEffect(()=>{
-    console.log("profilepic after uploading",profile_pic)
+    // console.log("profilepic after uploading",profile_pic)
     const actionPicData = "profilepic"
     const formData = new FormData();
     formData.append("profile_pic",profile_pic)
@@ -108,7 +106,7 @@ function EmpProfile() {
           'Content-Type': 'multipart/form-data'
         } 
       })
-      console.log(response)
+      // console.log(response)
       if(response.status == 200 ){
           try{
             const responce = await axios.get(baseURL+'/api/account/user/details',{
@@ -127,7 +125,7 @@ function EmpProfile() {
               }
            }
         catch(error){
-          console.log(error)
+          // console.log(error)
         }
         
         toast.success(response.data.message,{
@@ -137,7 +135,7 @@ function EmpProfile() {
       }
     }
     catch(error){
-      console.log(error)
+      // console.log(error)
     }
   }
 
@@ -151,14 +149,14 @@ function EmpProfile() {
                 'Content-Type': 'multipart/form-data'
             }
             })
-            console.log("profile data............",response)
+            // console.log("profile data............",response)
             if(response.status == 200){
               setProfileData(response.data.data)     
                                 
             }
         }
         catch(error){
-          console.log(error)
+          // console.log(error)
         }
     }
     fetchData()
@@ -167,7 +165,7 @@ function EmpProfile() {
   const handleRole = async()=>{
      setRoleModal(true)
   }
-  console.log("profile data...................",profileData)
+  // console.log("profile data...................",profileData)
   return (
     <div className='pt-14 flex'>
       <div>

@@ -20,7 +20,6 @@ function LoginSignup() {
         setVantaEffect(
           NET({
             el: vantaRef.current,
-           
             mouseControls: true,
             touchControls: true,
             gyroControls: false,

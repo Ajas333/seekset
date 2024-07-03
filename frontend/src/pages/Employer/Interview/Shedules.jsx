@@ -4,9 +4,10 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import AcceptRejectModal from '../../../components/employer/utilities/AcceptRejectModal';
 import { extractDate,extractTime,isInterviewTimeReached } from '../../../components/employer/constants/DateTime';
+import { baseURL } from '../../../components/Urls';
 
 function Shedules() {
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access'); 
     const [interview,setInterview] = useState([])
     const [callModal,setCallModal] = useState(false)
@@ -24,19 +25,19 @@ function Shedules() {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
-                console.log("Sheduled jobs details.....",responce)
+                // console.log("Sheduled jobs details.....",responce)
                 if(responce.status == 200){
                     setInterview(responce.data)
                 }
             }
             catch(error){
-                console.log(error)
+                // console.log(error)
             }
         }
         fetchData();
     },[action])
    
-    console.log("interviews,....................",interview)
+    // console.log("interviews,....................",interview)
 
     const toggleModal = (interview_id)=>{
       const data = interview.filter(int => int.id == interview_id)

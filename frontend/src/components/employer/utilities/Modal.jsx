@@ -4,10 +4,11 @@ import { Formik,Form,Field,ErrorMessage } from 'formik';
 import { toast } from 'react-toastify';
 import { EmpProfileEditSchema } from '../../../validation/EmployerProfileValidation';
 import axios from 'axios';
+import { baseURL } from '../../Urls';
 
 
 function Modal({setShowModal,section,setAction,action,profileData}) {
-    const baseURL='http://127.0.0.1:8000/'
+    // const baseURL='http://127.0.0.1:8000/'
     const token = localStorage.getItem('access'); 
     const  modalRef = useRef();
     const [info, setInfo] = useState({
@@ -21,9 +22,9 @@ function Modal({setShowModal,section,setAction,action,profileData}) {
         }
         }
 
-    console.log("section......................",section,profileData)
+    // console.log("section......................",section,profileData)
     const handleCompanyInfo = (values,{setSubmitting})=>{
-        console.log("company info",values)
+        // console.log("company info",values)
         const action = "companyInfo"
         const formData = new FormData();
         formData.append("full_name",values.full_name);
@@ -49,7 +50,7 @@ function Modal({setShowModal,section,setAction,action,profileData}) {
     };
 
     const handleHrsubmit = ()=>{
-        console.log("inside hr function",info)
+        // console.log("inside hr function",info)
         const action = "companyInfo"
         const formData = new FormData();
         formData.append("hr_name",info.hr_name);
@@ -62,14 +63,14 @@ function Modal({setShowModal,section,setAction,action,profileData}) {
 
     const handleSubmit = async(formData)=>{
         try{
-            const response = await axios.post(baseURL+'api/account/user/edit/',formData,{
+            const response = await axios.post(baseURL+'/api/account/user/edit/',formData,{
                 headers:{
                 'Authorization': `Bearer ${token}`,
                 'Accept' : 'application/json',
                 'Content-Type': 'multipart/form-data'
                 }
             })
-            console.log(response)
+            // console.log(response)
             if(response.status == 200 ){
                 toast.success(response.data.message,{
                 position: "top-center",
@@ -79,7 +80,7 @@ function Modal({setShowModal,section,setAction,action,profileData}) {
             }
         }
         catch(error){
-            console.log(error)
+            // console.log(error)
         }
     }
 

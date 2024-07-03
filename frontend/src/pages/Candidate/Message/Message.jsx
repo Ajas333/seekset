@@ -4,10 +4,11 @@ import { IoSend } from "react-icons/io5";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 // import Message from '../../../components/employer/utilities/Message';
 import Messages from '../../../components/candidate/utilities/Messages';
+import { baseURL } from '../../../components/Urls';
 
 function Message() {
   const [message, setMessage] = useState("");
-  const baseURL='http://127.0.0.1:8000'
+  // const baseURL='http://127.0.0.1:8000'
     const token = localStorage.getItem('access')
     const [chatRooms,setChatRooms] = useState([])
     const [chatMessages,setChatMessages] = useState([])
@@ -27,7 +28,7 @@ function Message() {
               }
             }
           )
-          console.log("chats.............................",response.data)
+          // console.log("chats.............................",response.data)
          
     
           if (response.status == 200){
@@ -39,7 +40,7 @@ function Message() {
           }
         }
         catch(error){
-          console.log(error)
+          // console.log(error)
         }
       }
       fetchMessageData()
@@ -53,16 +54,16 @@ function Message() {
       );
       setClient(newClint);
       newClint.onopen = () => {
-          console.log("WebSocket Client Connected");
+          // console.log("WebSocket Client Connected");
 
         };
         newClint.onmessage = (message) => {
-          console.log("ayyooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+          // console.log("ayyooooooooooooooooooooooooooooooooooooooooooooooooooooo")
           const data = JSON.parse(message.data);
           setChatMessages((prevMessages) => [...prevMessages, data]);
          
       };
-      console.log("set chat messages from websocket",chatMessages)          
+      // console.log("set chat messages from websocket",chatMessages)          
         return () => {
             newClint.close();
             };                
@@ -70,22 +71,22 @@ function Message() {
     
       const handleChat = (room) =>{
         setChatMessages([])
-        console.log("roooooooooooooooooooom",room)
+        // console.log("roooooooooooooooooooom",room)
         connectToWebSocket(room.candidate,room.employer,room.candidate);
         setSelectedChat(room)
-        console.log("helloooooo")
+        // console.log("helloooooo")
       }
 
   const sendMessage = ()=>{
     if (!client || client.readyState !== client.OPEN) {
-      console.error("WebSocket is not open");
+      // console.error("WebSocket is not open");
       return;
     }
     const sendername = candidateName
-    console.log("SENDER NAME:", sendername);
+    // console.log("SENDER NAME:", sendername);
     const messageData = { message, sendername };
     const messageString = JSON.stringify(messageData);
-    console.log("Sending Message:", messageString);
+    // console.log("Sending Message:", messageString);
     client.send(messageString);
     setMessage("");
   }

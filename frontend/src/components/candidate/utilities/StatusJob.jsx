@@ -1,11 +1,12 @@
 import React, { useState,useEffect } from 'react'
 import { RiMessage2Fill } from "react-icons/ri";
 import ChatModal from './ChatModal';
+import { baseURL } from '../../Urls';
 
 function StatusJob({selectedJob}) {
     const [step,setStep]=useState(0)
     const [chat,setChat]=useState(false)
-    const baseURL='http://127.0.0.1:8000'
+    // const baseURL='http://127.0.0.1:8000'
     
 
     useEffect(() => {
@@ -37,9 +38,9 @@ function StatusJob({selectedJob}) {
         setChat(true)
     }
       
-    console.log("inside status job component",selectedJob)
-    console.log("step.................",step)
-    console.log(selectedJob.job.employer.profile_pic)
+    // console.log("inside status job component",selectedJob)
+    // console.log("step.................",step)
+    // console.log(selectedJob.job.employer.profile_pic)
     
     const profile_pic = baseURL+selectedJob.job.employer.profile_pic
     const userName = selectedJob.job.employer.user_full_name

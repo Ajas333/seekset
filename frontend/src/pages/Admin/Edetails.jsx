@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Sidebar from '../../components/admin/Utilities/Sidebar';
+import { baseURL } from '../../components/Urls';
 
 function Edetails() {
-    const baseURL = "http://127.0.0.1:8000";
+    // const baseURL = "http://127.0.0.1:8000";
     const { id } = useParams();
     const [employer, setEmployer] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -15,13 +16,13 @@ function Edetails() {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${baseURL}/dashboard/employer/${id}`);
-                console.log(response.data); // Ensure you're getting the expected data structure
+                // console.log(response.data); 
                 if (response.status === 200) {
                     setEmployer(response.data);
                     setLoading(false);
                 }
             } catch (error) {
-                console.error('Error fetching employer details:', error);
+                // console.error('Error fetching employer details:', error);
             }
         };
 
@@ -29,7 +30,7 @@ function Edetails() {
     }, [render]);
 
     const handleStatus = async(action)=>{
-        console.log(action)
+        // console.log(action)
         const formData = new FormData()
         formData.append("id",employer.id);
         formData.append("action",action);
@@ -40,7 +41,7 @@ function Edetails() {
           }
         }
         catch(error){
-          console.log(error)
+        //   console.log(error)
         }
   
       }

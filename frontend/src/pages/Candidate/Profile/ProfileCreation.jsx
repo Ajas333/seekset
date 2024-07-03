@@ -13,11 +13,12 @@ import user_default from '../../../assets/user_default.jpg'
 import { RiPencilFill } from "react-icons/ri";
 import ProfilepicModal from '../../../components/ProfilepicModal';
 import { ProfileDataSchema,initialValues } from '../../../validation/CandidateProfileValidation';
+import { baseURL } from '../../../components/Urls';
 
 
 function ProfileCreation() {
 
-  const baseURL='http://127.0.0.1:8000/'
+  // const baseURL='http://127.0.0.1:8000/'
   const token = localStorage.getItem('access'); 
   const authentication_user = useSelector(state => state.authentication_user);
   const [step, setStep] = useState(1);
@@ -101,7 +102,7 @@ function ProfileCreation() {
       
       const base64Pattern = /^data:image\/(png|jpeg|jpg);base64,/;
     if (!base64Pattern.test(base64String)) {
-      console.error('Invalid base64 string');
+      // console.error('Invalid base64 string');
       return;
     }   
     const base64Content = base64String.replace(base64Pattern, '');
@@ -116,17 +117,17 @@ function ProfileCreation() {
     setProfilepic(file);
     };
     convertBase64ToImage(croppedImageUrl)
-    console.log("cropped image url............",croppedImageUrl)
+    // console.log("cropped image url............",croppedImageUrl)
   },[croppedImageUrl])
 
 
   useEffect(()=>{
-      console.log("profile piccture after crop",profile_pic)
+      // console.log("profile piccture after crop",profile_pic)
   },[profile_pic])
 
   const handleSubmit =async(values,{setSubmitting}) =>{
 
-    console.log(values)
+    // console.log(values)
     
     const skill=skills.toString()
     
@@ -150,16 +151,16 @@ function ProfileCreation() {
     if (resume.resume) {
       formData.append("resume", resume.resume, resume.resume.name);
     }
-    console.log("form data................",formData)
+    // console.log("form data................",formData)
     try{
-        const responce=await axios.post(baseURL+'api/account/user/profile_creation/',formData,{
+        const responce=await axios.post(baseURL+'/api/account/user/profile_creation/',formData,{
             headers:{
               'Authorization': `Bearer ${token}`,
               'Accept' : 'application/json',
               'Content-Type': 'multipart/form-data'
             }
           })
-        console.log("response...........................",responce)
+        // console.log("response...........................",responce)
         if(responce.status==200){
           dispatch(
             set_user_basic_details({
@@ -170,7 +171,7 @@ function ProfileCreation() {
         }
     }
     catch(error){
-        console.log("error",error)
+        // console.log("error",error)
     }finally{
       setSubmitting(false)
     }
@@ -179,13 +180,13 @@ function ProfileCreation() {
 
 
 
-  console.log(data);
-  console.log(profile_pic);
-  console.log(resume);
-  console.log(token)
+  // console.log(data);
+  // console.log(profile_pic);
+  // console.log(resume);
+  // console.log(token)
   useEffect(() => {
     return () => {
-        console.log("drftgyhujikotyhuji",authentication_user)
+        // console.log("drftgyhujikotyhuji",authentication_user)
     };
   }, [])
   return (
